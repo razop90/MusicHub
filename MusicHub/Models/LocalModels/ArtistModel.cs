@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusicHub.Models.LocalModels
 {
-    public class SingerModel : ISinger
+    public class ArtistModel : IArtist
     {
         [Key]
         public int ID { get; set; }
@@ -16,11 +16,11 @@ namespace MusicHub.Models.LocalModels
 
         public string Name { get; set; }
         public string LastName { get; set; }
-        public List<ISong> Songs { get; set; }
+        public List<SongModel> Songs { get; set; }
 
         #endregion
 
-        public SingerModel()
+        public ArtistModel()
         {
 
         }
