@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 
 namespace MusicHub
 {
+    public enum MusicGenre { Pop, Rock }
+
     public class Program
     {
         public static void Main(string[] args)
