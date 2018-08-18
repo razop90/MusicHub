@@ -1,14 +1,15 @@
-﻿using System;
+﻿using MusicHub.Models.LocalModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MusicHub.Interfaces
 {
-    public interface ISinger
+    public interface IArtist
     {
         string Name { get; set; }
         string LastName { get; set; }
-        List<ISong> Songs { get; set; }
+        List<SongModel> Songs { get; set; }
     }
 }
