@@ -16,8 +16,8 @@ namespace MusicHub.Models.LocalModels
         #region Properties
 
         public string Name { get; set; }
-        [NotMapped]
-        public ArtistModel SingerDetails { get; set; }
+        //[NotMapped]
+        public ArtistModel ArtistDetails { get; set; }
         public MusicGenre Genre { get; set; }
         public string Composer { get; set; }
         public DateTime ReleaseDate { get; set; }
