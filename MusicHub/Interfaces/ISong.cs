@@ -9,7 +9,7 @@ namespace MusicHub.Interfaces
     public interface ISong
     {
         string Name { get; set; }
-        ArtistModel SingerDetails { get; set; }
+        ArtistModel ArtistDetails { get; set; }
         MusicGenre Genre { get; set; }
         string Composer { get; set; }
         DateTime ReleaseDate { get; set; }
