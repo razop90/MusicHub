@@ -11,6 +11,6 @@ namespace MusicHub.Interfaces
         string LastName { get; set; }
         DateTime BirthDate { get; set; }
         string EmailAddress { get; set; }
-        List<ISong> Playlist { get; set; }
+        List<int> Playlist { get; set; }
     }
 }
