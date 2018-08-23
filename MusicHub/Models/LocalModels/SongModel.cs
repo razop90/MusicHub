@@ -25,6 +25,7 @@ namespace MusicHub.Models.LocalModels
         public string Name { get; set; }
         /// <summary>
         /// Artist id - preformed by this artist.
+        /// If null - there is no artist preforming this song.
         /// </summary>
         public int? ArtistId { get; set; }
         /// <summary>
