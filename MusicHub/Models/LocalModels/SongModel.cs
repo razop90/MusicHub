@@ -22,12 +22,14 @@ namespace MusicHub.Models.LocalModels
         /// <summary>
         /// Song name.
         /// </summary>
+        [StringLength(30, ErrorMessage = "Song name cannot be longer than 30 characters.")]
         public string Name { get; set; }
         /// <summary>
         /// Artist id - preformed by this artist.
         /// If null - there is no artist preforming this song.
         /// </summary>
-        public int? ArtistId { get; set; }
+        [DisplayFormat(NullDisplayText = "There is no artist preforming this song")]
+        public ArtistModel Artist { get; set; }
         /// <summary>
         /// Song's genre.
         /// </summary>
@@ -35,14 +37,17 @@ namespace MusicHub.Models.LocalModels
         /// <summary>
         /// Song's composer.
         /// </summary>
+        [StringLength(50, ErrorMessage = "Composer name cannot be longer than 50 characters.")]
         public string Composer { get; set; }
         /// <summary>
         /// Song's release date.
-        /// </summary>
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime ReleaseDate { get; set; }
         /// <summary>
         /// A YouTube link to the song.
         /// </summary>
+        [DisplayFormat(NullDisplayText = "There is no YouTube link to this song")]
         public string YouTubeUrl { get; set; }
 
         #endregion
@@ -53,7 +58,7 @@ namespace MusicHub.Models.LocalModels
         public SongModel()
         {
             //Should check if it's the default behavior.
-            ArtistId = null;
+           // ArtistId = null;
         }
     }
 }
