@@ -27,7 +27,14 @@ namespace MusicHub.Models.LocalModels
         /// <summary>
         /// Artist id - preformed by this artist.
         /// If null - there is no artist preforming this song.
+        /// Represent the artist's id in the server.
         /// </summary>
+        public int ArtistId { get; set; }
+        /// <summary>
+        /// Preformed by this artist.
+        /// If null - there is no artist preforming this song.
+        /// </summary>
+        [NotMapped]
         [DisplayFormat(NullDisplayText = "There is no artist preforming this song")]
         public ArtistModel Artist { get; set; }
         /// <summary>

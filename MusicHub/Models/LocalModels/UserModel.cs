@@ -39,7 +39,7 @@ namespace MusicHub.Models.LocalModels
         /// <summary>
         /// The songs id's playlist of a specific user.
         /// </summary>
-        public List<SongModel> Playlist { get; set; }
+        public virtual ICollection<SongModel> Playlist { get; set; } //TODO:should be a list of id's maybe?
 
         #endregion
 

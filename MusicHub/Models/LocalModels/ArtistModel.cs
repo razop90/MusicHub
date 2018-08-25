@@ -29,9 +29,9 @@ namespace MusicHub.Models.LocalModels
         [StringLength(30, ErrorMessage = "Last name cannot be longer than 30 characters.")]
         public string LastName { get; set; }
         /// <summary>
-        /// Contains song objects id's.
+        /// Contains song objects.
         /// </summary>
-        public virtual ICollection<SongModel> Songs { get; set; }
+        public virtual ICollection<SongModel> Songs { get; set; } //TODO:should be a list of id's maybe?
 
         #endregion
 
