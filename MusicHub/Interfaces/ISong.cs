@@ -10,6 +10,7 @@ namespace MusicHub.Interfaces
     {
         string Name { get; set; }
         int? ArtistId { get; set; }
+        ArtistModel Artist { get; set; }
         MusicGenre Genre { get; set; }
         string Composer { get; set; }
         DateTime ReleaseDate { get; set; }

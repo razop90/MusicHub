@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MusicHub.Models;
+using MusicHub.Models.LocalModels;
 
 namespace MusicHub.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<ArtistModel> Artists { get; set; }
+        public DbSet<SongModel> Songs { get; set; }
+        public DbSet<UserModel> Users { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

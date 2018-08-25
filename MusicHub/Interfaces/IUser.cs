@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicHub.Models.LocalModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,6 @@ namespace MusicHub.Interfaces
         string LastName { get; set; }
         DateTime BirthDate { get; set; }
         string EmailAddress { get; set; }
-        List<int> Playlist { get; set; }
+        ICollection<SongModel> Playlist { get; set; }
     }
 }

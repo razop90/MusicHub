@@ -10,6 +10,6 @@ namespace MusicHub.Interfaces
     {
         string Name { get; set; }
         string LastName { get; set; }
-        List<int> Songs { get; set; }
+        ICollection<SongModel> Songs { get; set; }
     }
 }

@@ -21,15 +21,17 @@ namespace MusicHub.Models.LocalModels
         /// <summary>
         /// Artist first name.
         /// </summary>
+        [StringLength(30, ErrorMessage = "First name cannot be longer than 30 characters.")]
         public string Name { get; set; }
         /// <summary>
         /// Artists last name.
         /// </summary>
+        [StringLength(30, ErrorMessage = "Last name cannot be longer than 30 characters.")]
         public string LastName { get; set; }
         /// <summary>
-        /// Contains song objects id's.
+        /// Contains song objects.
         /// </summary>
-        public List<int> Songs { get; set; }
+        public virtual ICollection<SongModel> Songs { get; set; } //TODO:should be a list of id's maybe?
 
         #endregion
 
@@ -38,7 +40,7 @@ namespace MusicHub.Models.LocalModels
         /// </summary>
         public ArtistModel()
         {
-            Songs = new List<int>();
+           // Songs = new List<int>();
         }
     }
 }
