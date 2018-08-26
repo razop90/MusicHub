@@ -311,8 +311,16 @@ namespace MusicHub.Controllers
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+
                 var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
+                if (!result.Succeeded && result.Errors.Where(e => e.Code == "DuplicateUserName" || e.Code == "DuplicateEmail").Count() > 0)
+                {
+                    var us=User;
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation("User logged in using an account of {Name} provider.", info.LoginProvider);
+                    return RedirectToLocal(returnUrl);
+                }
+                else if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
@@ -324,6 +332,7 @@ namespace MusicHub.Controllers
                 }
                 AddErrors(result);
             }
+            //}
 
             ViewData["ReturnUrl"] = returnUrl;
             return View(nameof(ExternalLogin), model);
