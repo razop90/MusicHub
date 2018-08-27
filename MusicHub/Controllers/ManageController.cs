@@ -53,12 +53,12 @@ namespace MusicHub.Controllers
 
             if (user == null)
             {
-                user = await _userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
+                //user = await _userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
 
-                if (user == null)
-                {
-                    throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-                }
+                //if (user == null)
+                //{
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                //}
             }
 
             return user;

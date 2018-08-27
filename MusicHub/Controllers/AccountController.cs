@@ -277,7 +277,7 @@ namespace MusicHub.Controllers
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true);
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
@@ -313,9 +313,9 @@ namespace MusicHub.Controllers
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
 
                 var result = await _userManager.CreateAsync(user);
+
                 if (!result.Succeeded && result.Errors.Where(e => e.Code == "DuplicateUserName" || e.Code == "DuplicateEmail").Count() > 0)
                 {
-                    var us=User;
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User logged in using an account of {Name} provider.", info.LoginProvider);
                     return RedirectToLocal(returnUrl);
