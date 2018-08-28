@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using MusicHub;
 using MusicHub.Data;
 using System;
-using System;
 
 namespace MusicHub.Data.Migrations
 {
