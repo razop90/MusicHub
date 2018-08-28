@@ -13,7 +13,7 @@ namespace MusicHub.Data
     {
         public DbSet<ArtistModel> Artists { get; set; }
         public DbSet<SongModel> Songs { get; set; }
-        public DbSet<UserModel> Users { get; set; }
+        //public DbSet<UserModel> Users { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

@@ -8,13 +8,15 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using MusicHub;
 using MusicHub.Data;
 using System;
+using System;
 
 namespace MusicHub.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180828065237_AddArtist")]
+    partial class AddArtist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
