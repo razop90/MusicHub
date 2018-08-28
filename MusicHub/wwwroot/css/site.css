@@ -26,6 +26,58 @@
     margin: 15px;
 }
 
+#Facebook {
+    background-color: transparent;
+    width: 50px;
+    background: url('../images/facebook.png') no-repeat;
+    height: 50px;
+    font-size: 0px;
+    background-size: cover;
+    cursor: pointer;
+    border: none;
+    margin: 5px 10px 0px 10px;
+}
+
+#Microsoft {
+    background-color: transparent;
+    background: url('../images/microsoft.png') no-repeat;
+    width: 50px;
+    height: 50px;
+    font-size: 0px;
+    background-size: cover;
+    cursor: pointer;
+    border: none;
+    margin: 5px 10px 0px 10px;
+}
+
+#Google {
+    background-color: transparent;
+    background: url('../images/google.png') no-repeat;
+    width: 50px;
+    height: 50px;
+    font-size: 0px;
+    background-size: cover;
+    cursor: pointer;
+    border: none;
+    margin: 5px 10px 0px 10px;
+}
+
+
+#Facebook:hover {
+    box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    opacity: 0.8;
+}
+
+#Microsoft:hover {
+    box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    opacity: 0.8;
+}
+
+#Google:hover {
+    box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    opacity: 0.8;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */

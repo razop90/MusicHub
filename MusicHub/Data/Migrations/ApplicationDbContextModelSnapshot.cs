@@ -223,7 +223,7 @@ namespace MusicHub.Data.Migrations
 
                     b.HasIndex("ArtistModelID");
 
-                    b.ToTable("SongModel");
+                    b.ToTable("Songs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

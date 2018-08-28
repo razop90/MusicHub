@@ -36,7 +36,7 @@ namespace MusicHub.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SongModel",
+                name: "Songs",
                 columns: table => new
                 {
                     ID = table.Column<int>(nullable: false)
@@ -76,7 +76,7 @@ namespace MusicHub.Data.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_SongModel_ArtistModelID",
-                table: "SongModel",
+                table: "Songs",
                 column: "ArtistModelID");
 
             migrationBuilder.AddForeignKey(
@@ -95,7 +95,7 @@ namespace MusicHub.Data.Migrations
                 table: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "SongModel");
+                name: "Songs");
 
             migrationBuilder.DropTable(
                 name: "Artists");
