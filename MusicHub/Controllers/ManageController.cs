@@ -107,7 +107,7 @@ namespace MusicHub.Controllers
                 var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
                 if (!setEmailResult.Succeeded)
                 {
-                    throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
+                    AddErrors(setEmailResult);
                 }
             }
 
@@ -117,9 +117,13 @@ namespace MusicHub.Controllers
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
+                    AddErrors(setPhoneResult);
                 }
             }
+
+            //if false - invalid user information.
+            if (!ModelState.IsValid)
+                return View(new IndexViewModel() { Username = user.UserName, Email = user.Email, IsEmailConfirmed = user.EmailConfirmed, PhoneNumber = user.PhoneNumber });
 
             StatusMessage = "Your profile has been updated";
             return RedirectToAction(nameof(Index));
