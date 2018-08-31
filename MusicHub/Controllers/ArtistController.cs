@@ -37,12 +37,18 @@ namespace MusicHub.Controllers
             }
 
             var artistModel = await _context.Artists
+                // Include the songs of this artist inside the model
+                .Include(artist => artist.Songs)
+                // We query this DB entity not for editing but for displaying
+                // so we use AsNoTracking() for performance 
+                // it won't be synced with the DB info on call
+                .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (artistModel == null)
             {
                 return NotFound();
             }
-
+            // Send the model to the Details view page
             return View(artistModel);
         }
 
@@ -76,11 +82,15 @@ namespace MusicHub.Controllers
                 return NotFound();
             }
 
-            var artistModel = await _context.Artists.SingleOrDefaultAsync(m => m.ID == id);
+            var artistModel = await _context.Artists
+                // Include artist song inside the model
+                .Include(artist => artist.Songs)
+                .SingleOrDefaultAsync(m => m.ID == id);
             if (artistModel == null)
             {
                 return NotFound();
             }
+            // send the model to the view
             return View(artistModel);
         }
 
