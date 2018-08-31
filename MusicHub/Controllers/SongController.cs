@@ -57,7 +57,8 @@ namespace MusicHub.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,ArtistId,Genre,Composer,ReleaseDate,YouTubeUrl")] SongModel songModel)
+        //removed ArtistId
+        public async Task<IActionResult> Create([Bind("ID,Name,Genre,Composer,ReleaseDate,YouTubeUrl")] SongModel songModel)
         {
             if (ModelState.IsValid)
             {
@@ -89,7 +90,8 @@ namespace MusicHub.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,ArtistId,Genre,Composer,ReleaseDate,YouTubeUrl")] SongModel songModel)
+        //removed ArtistID
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Genre,Composer,ReleaseDate,YouTubeUrl")] SongModel songModel)
         {
             if (id != songModel.ID)
             {
