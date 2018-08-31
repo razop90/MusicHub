@@ -61,11 +61,12 @@ namespace MusicHub
             }).AddMicrosoftAccount(microdoftOptions =>
             {
                 microdoftOptions.ClientId = Configuration["Microsoft:app_id"];
-                microdoftOptions.ClientSecret = Configuration["Microsoft:passward"];
+                microdoftOptions.ClientSecret = Configuration["Microsoft:password"];
             });
 
-            // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
+            //configure email services
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.Configure<EmailSenderInfo>(Configuration);
 
             services.AddMvc();
         }

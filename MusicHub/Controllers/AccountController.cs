@@ -61,7 +61,22 @@ namespace MusicHub.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                ApplicationUser signedUser = await _userManager.FindByEmailAsync(model.Email);
+                if (signedUser == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt. Email not found.");
+                    return View(model);
+                }
+
+                //Email confirmation check - only if email confirmation is needed in order to log in.
+                var isAllowed = await CanSignInAsync(signedUser);
+                if (!isAllowed)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt. You must confirm your email in order to log in.");
+                    return View(model);
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(signedUser.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -85,6 +100,22 @@ namespace MusicHub.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        /// <summary>
+        /// If an email confirmation is a must - check if a given user confirmed his email address.
+        /// </summary>
+        /// <param name="user">User object</param>
+        /// <returns>True/False</returns>
+        public virtual async Task<bool> CanSignInAsync(ApplicationUser user)
+        {
+            if (_signInManager.Options.SignIn.RequireConfirmedEmail && !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                _logger.LogWarning(0, "User {userId} cannot sign in without a confirmed email.", await _userManager.GetUserIdAsync(user));
+                return false;
+            }
+
+            return true;
         }
 
         [HttpGet]
@@ -375,7 +406,8 @@ namespace MusicHub.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                 //can add this check - || !(await _userManager.IsEmailConfirmedAsync(user))
+                if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return RedirectToAction(nameof(ForgotPasswordConfirmation));

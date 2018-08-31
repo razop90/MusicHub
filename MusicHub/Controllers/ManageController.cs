@@ -47,6 +47,9 @@ namespace MusicHub.Controllers
         [TempData]
         public string StatusMessage { get; set; }
 
+        [TempData]
+        public string ErrorMessage { get; set; }
+
         private async Task<ApplicationUser> GetUserInfo()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -69,6 +72,9 @@ namespace MusicHub.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await GetUserInfo();
+
+            //var info = await _signInManager.GetExternalLoginInfoAsync();
+            //ViewData.Add("Provider", info);
 
             var model = new IndexViewModel
             {
@@ -241,6 +247,10 @@ namespace MusicHub.Controllers
             model.ShowRemoveButton = await _userManager.HasPasswordAsync(user) || model.CurrentLogins.Count > 1;
             model.StatusMessage = StatusMessage;
 
+            //if there is an error message from previo
+            if (!string.IsNullOrEmpty(ErrorMessage))
+                ModelState.AddModelError(string.Empty, ErrorMessage);
+
             return View(model);
         }
 
@@ -271,13 +281,17 @@ namespace MusicHub.Controllers
             var result = await _userManager.AddLoginAsync(user, info);
             if (!result.Succeeded)
             {
-                throw new ApplicationException($"Unexpected error occurred adding external login for user with ID '{user.Id}'.");
+                AddErrors(result);
             }
 
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            if (ModelState.IsValid && ModelState.ErrorCount == 0)
+            {
+                // Clear the existing external cookie to ensure a clean login process
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            StatusMessage = "The external login was added.";
+                StatusMessage = "The external login was added.";
+            }
+
             return RedirectToAction(nameof(ExternalLogins));
         }
 
@@ -414,7 +428,7 @@ namespace MusicHub.Controllers
             await _userManager.SetTwoFactorEnabledAsync(user, false);
             await _userManager.ResetAuthenticatorKeyAsync(user);
             _logger.LogInformation("User with id '{UserId}' has reset their authentication app key.", user.Id);
-
+                       
             return RedirectToAction(nameof(EnableAuthenticator));
         }
 
@@ -454,8 +468,14 @@ namespace MusicHub.Controllers
 
         private void AddErrors(IdentityResult result)
         {
+            //reset error message.
+            ErrorMessage = null;
+
             foreach (var error in result.Errors)
             {
+                //set the first error message in the error property.
+                if (string.IsNullOrEmpty(ErrorMessage))
+                    ErrorMessage = error.Description;
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
