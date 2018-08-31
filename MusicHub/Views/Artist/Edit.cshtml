@@ -22,7 +22,14 @@
                 <label asp-for="LastName" class="control-label"></label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
+            </div> 
+            
+            @foreach (var song in Model.Songs)
+            {
+                @Html.DisplayFor(modelItem => song.Name)
+
+            }
+              
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>

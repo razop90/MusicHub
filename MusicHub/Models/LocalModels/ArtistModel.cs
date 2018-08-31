@@ -22,14 +22,14 @@ namespace MusicHub.Models.LocalModels
         /// Artist first name.
         /// </summary>
         [Required]
-        [Display(Name="First NAme")]
+        [Display(Name="First Name")]
         [StringLength(30, ErrorMessage = "First name cannot be longer than 30 characters.")]
         public string Name { get; set; }
         /// <summary>
         /// Artists last name.
         /// </summary>
         [Required]
-        [Display(Name = "Last NAme")]
+        [Display(Name = "Last Name")]
         [StringLength(30, ErrorMessage = "Last name cannot be longer than 30 characters.")]
         public string LastName { get; set; }
         /// <summary>

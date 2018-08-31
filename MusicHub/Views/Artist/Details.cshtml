@@ -22,6 +22,29 @@
         <dd>
             @Html.DisplayFor(model => model.LastName)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Songs)
+        </dt>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Song Title</th>
+                    <th>Ganere</th>
+                </tr>
+                <!-- iterate for each song of the artist -->
+                @foreach (var song in Model.Songs)
+            {   <!-- Add table row with song name and genere -->
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => song.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => song.Genre)
+                    </td>
+                </tr>
+        }
+            </table>
+        </dd>
     </dl>
 </div>
 <div>
