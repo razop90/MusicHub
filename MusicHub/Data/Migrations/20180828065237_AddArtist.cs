@@ -41,7 +41,7 @@ namespace MusicHub.Data.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                 //   ArtistId = table.Column<int>(nullable: true),
+                    ArtistId = table.Column<int>(nullable: true),
                     ArtistModelID = table.Column<int>(nullable: true),
                     Composer = table.Column<string>(maxLength: 50, nullable: true),
                     Genre = table.Column<int>(nullable: false),

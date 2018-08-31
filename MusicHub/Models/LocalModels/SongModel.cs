@@ -29,7 +29,7 @@ namespace MusicHub.Models.LocalModels
         /// If null - there is no artist preforming this song.
         /// Represent the artist's id in the server.
         /// </summary>
-       // public int? ArtistId { get; set; }
+        public int? ArtistId { get; set; }
         /// <summary>
         /// Preformed by this artist.
         /// If null - there is no artist preforming this song.
