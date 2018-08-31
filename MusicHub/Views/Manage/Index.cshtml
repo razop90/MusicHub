@@ -7,7 +7,6 @@
     ViewData.AddActivePage(ManageNavPages.Index);
 
     var providerInfo = await SignInManager.GetExternalLoginInfoAsync();
-
 }
 
 <h4>@ViewData["Title"]</h4>
@@ -25,29 +24,31 @@
                 @if (Model.IsEmailConfirmed)
                 {
                     <div class="input-group">
-                        @*if providerInfo is not null - the current user is logged by a provider*@
-                        @*@if (providerInfo == null)
-                            {*@
-                        <input asp-for="Email" class="form-control" />
-                        @*}
-                            else
-                            {
-                                <input asp-for="Email" class="form-control" disabled />
-                            }*@
+                        @*if providerInfo is not null - the current user is logged with a provider*@
+                        @*Disable email update if logged with a provider*@
+                        @if (providerInfo == null)
+                        {
+                            <input asp-for="Email" class="form-control" />
+                        }
+                        else
+                        {
+                            <input asp-for="Email" class="form-control" disabled />
+                        }
                         <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
                     </div>
                 }
                 else
                 {
-                    @*if providerInfo is not null - the current user is logged by a provider*@
-                    @*@if (providerInfo == null)
-                        {*@
-                    <input asp-for="Email" class="form-control" />
-                    @*}
-                        else
-                        {
-                            <input asp-for="Email" class="form-control" disabled />
-                        }*@
+                    @*if providerInfo is not null - the current user is logged with a provider*@
+                    @*Disable email update if logged with a provider*@
+                    @if (providerInfo == null)
+                    {
+                        <input asp-for="Email" class="form-control" />
+                    }
+                    else
+                    {
+                        <input asp-for="Email" class="form-control" disabled />
+                    }
                     <button asp-action="SendVerificationEmail" class="btn btn-link">Send verification email</button>
                 }
                 <span asp-validation-for="Email" class="text-danger"></span>
