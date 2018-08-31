@@ -220,7 +220,7 @@ namespace MusicHub.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email.Split('@')[0], Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -290,10 +290,13 @@ namespace MusicHub.Controllers
             else
             {
                 // If the user does not have an account, then ask the user to create an account.
-                ViewData["ReturnUrl"] = returnUrl;
-                ViewData["LoginProvider"] = info.LoginProvider;
+                //ViewData["ReturnUrl"] = returnUrl;
+                //ViewData["LoginProvider"] = info.LoginProvider;
+
+                //Login with the new provider account.
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
+                return await ExternalLoginConfirmation(new ExternalLoginViewModel { Email = email });
+                //return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
             }
         }
 
@@ -310,17 +313,19 @@ namespace MusicHub.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email.Split('@')[0], Email = model.Email };
 
                 var result = await _userManager.CreateAsync(user);
 
-                if (!result.Succeeded && result.Errors.Where(e => e.Code == "DuplicateUserName" || e.Code == "DuplicateEmail").Count() > 0)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation("User logged in using an account of {Name} provider.", info.LoginProvider);
-                    return RedirectToLocal(returnUrl);
-                }
-                else if (result.Succeeded)
+                //if (!result.Succeeded && result.Errors.Where(e => e.Code == "DuplicateUserName" || e.Code == "DuplicateEmail").Count() > 0)
+                //{
+                //    await _signInManager.SignInAsync(user, isPersistent: false);
+                //    _logger.LogInformation("User logged in using an account of {Name} provider.", info.LoginProvider);
+                //    return RedirectToLocal(returnUrl);
+                //}
+                //else 
+
+                if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
