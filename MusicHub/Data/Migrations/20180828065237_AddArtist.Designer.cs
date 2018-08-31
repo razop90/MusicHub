@@ -204,7 +204,7 @@ namespace MusicHub.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                   // b.Property<int?>("ArtistId");
+                    b.Property<int?>("ArtistId");
 
                     b.Property<int?>("ArtistModelID");
 
