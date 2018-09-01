@@ -25,11 +25,11 @@ namespace MusicHub.Controllers
                 @"~/images/Highlights/highlight1.jpg",
                 "Howling on YouTube"),
 
-                new Highlight("Ariana Grande – ​God is a woman",
+                new Highlight("Ariana Grande – ​God Is A Woman",
                 "God Is a Woman (stylized in sentence case) is a song by American singer Ariana Grande",
                 @"https://www.youtube.com/watch?v=kHLHSlExFis",
                 @"~/images/Highlights/highlight2.jpg",
-                "God is a woman on YouTube"),
+                "​God Is A Woman on YouTube"),
 
                  new Highlight("Charlie Puth - How Long",
                 "How Long is a song recorded and produced by American singer Charlie Puth",
