@@ -16,6 +16,7 @@ namespace MusicHub.Controllers
 
         public HomeController()
         {
+            //add highlights.
             highlights = highlights = new List<Highlight>()
             {
                 new Highlight("Flow X Granrodeo - Howling",
@@ -41,7 +42,7 @@ namespace MusicHub.Controllers
                 @"https://www.youtube.com/watch?v=6BTjG-dhf5s",
                 @"~/images/Highlights/highlight4.png",
                 "Limbo on YouTube")
-        };
+             };
         }
 
         public IActionResult Index()
