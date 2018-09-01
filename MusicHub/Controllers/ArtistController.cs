@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicHub.Data;
+using MusicHub.Models.ArtistViewModels;
 using MusicHub.Models.LocalModels;
 
 namespace MusicHub.Controllers
@@ -90,8 +91,27 @@ namespace MusicHub.Controllers
             {
                 return NotFound();
             }
+            PopulateAssignedSongsData(artistModel);
             // send the model to the view
             return View(artistModel);
+        }
+
+        private void PopulateAssignedSongsData(ArtistModel artistModel)
+        {
+            var allSongs = _context.Songs;
+            var artistSongs = new HashSet<int>(artistModel.Songs.Select(song => song.ID));
+            var viewModel = new List<AssignedSongData>();
+            foreach (var song in allSongs)
+            {
+                viewModel.Add(new AssignedSongData
+                {
+                    SongID = song.ID,
+                    Title = song.Name,
+                    Assigned = artistSongs.Contains(song.ID)
+                });
+            }
+            //ViewBag.Songs = viewModel;
+            ViewData["Songs"] = viewModel;
         }
 
         // POST: Artist/Edit/5
@@ -99,34 +119,84 @@ namespace MusicHub.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LastName")] ArtistModel artistModel)
+        public async Task<IActionResult> Edit(int? id,  string[] selectedSongs)
         {
-            if (id != artistModel.ID)
+            if (id == null)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            // Get the artist to update from the DB, included his songs
+            var artistToUpdate = await _context.Artists
+            .Include(artist => artist.Songs)
+            .SingleOrDefaultAsync(m => m.ID == id);
+            // Check if update operation is possible to current artist
+            if (await TryUpdateModelAsync<ArtistModel>(
+                artistToUpdate,"",
+                i => i.Name, i => i.LastName, i => i.Songs))
             {
+                UpdateArtistSongs(selectedSongs, artistToUpdate);
                 try
                 {
-                    _context.Update(artistModel);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!ArtistModelExists(artistModel.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(artistModel);
+
+            UpdateArtistSongs(selectedSongs, artistToUpdate);
+            PopulateAssignedSongsData(artistToUpdate);
+            return View(artistToUpdate);
+        }
+
+        private void UpdateArtistSongs(string[] selectedSongs, ArtistModel artistToUpdate)
+        {
+            if (selectedSongs == null)
+            {
+                artistToUpdate.Songs = new List<SongModel>();
+                return;
+            }
+            // For performance we use HashSet of the selected songs from the edit view of the Artist
+            var selectedSongsHS = new HashSet<string>(selectedSongs);
+            // The current songs of the artist
+            var artistSongs = new HashSet<int>
+                (artistToUpdate.Songs.Select(s => s.ID));
+            // Iterate all songs in the DB
+            foreach (var song in _context.Songs)
+            {
+                // Check if the current song from DB is selected by the view
+                if (selectedSongsHS.Contains(song.ID.ToString()))
+                {
+                    // Check if the artist is not already contain the current song and add it
+                    if (!artistSongs.Contains(song.ID))
+                    {
+                        //artistToUpdate.Songs.Add(new SongModel { ArtistId = artistToUpdate.ID, ID = song.ID });
+                        SongModel songToAssignArtist = song;
+                        songToAssignArtist.Artist = artistToUpdate;
+                        songToAssignArtist.ArtistId = artistToUpdate.ID;
+                    }
+                }
+                else
+                {
+                    // If we got here than current DB song is not selected so we check if we need to remove it
+                    if (artistSongs.Contains(song.ID))
+                    {
+                        /*
+                        SongModel songToRemove = artistToUpdate.Songs.SingleOrDefault(i => i.ID == song.ID);
+                        _context.Remove(songToRemove);
+                        */
+                        SongModel songToUnassignArtist = song;
+                        songToUnassignArtist.Artist = null;
+                        songToUnassignArtist.ArtistId = null;
+                        _context.Update(songToUnassignArtist);
+                    }
+                }
+            }
         }
 
         // GET: Artist/Delete/5
