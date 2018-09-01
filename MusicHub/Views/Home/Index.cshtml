@@ -67,7 +67,7 @@
 </style>
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-    @{ List<MusicHub.Classes.Home.Highlight> highlights = ViewData["Highlights"] as List<MusicHub.Classes.Home.Highlight>;
+    @{ var highlights = ViewData["Highlights"] as List<MusicHub.Classes.Home.Highlight>;
         if (highlights != null)
         {
             <div>
