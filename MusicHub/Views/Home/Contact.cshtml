@@ -1,8 +1,11 @@
-﻿@{
+﻿@model LocationsViewModel
+
+@using Newtonsoft.Json;
+@using MusicHub.Models.HomeViewModels;
+@{
     ViewData["Title"] = "Contact";
 }
 <h2>@(ViewData["Title"] + " Us")</h2>
-@*<h3>@ViewData["Message"]</h3>*@
 
 <style>
     /* Always set the map height explicitly to define the size of the div
@@ -32,16 +35,33 @@
 <div>
     <div id="map"></div>
     <script>
+        //Getting the locations objects from the model.
+        var locations = @Html.Raw(JsonConvert.SerializeObject(Model.Locations));
         var map;
         function initMap() {
+            //Creating the map and initialize starting coordinates point for the view.
             map = new google.maps.Map(document.getElementById('map'), {
                 center: { lat: 31.9730015, lng: 34.792501300000026 },
                 zoom: 12
             });
-            
-            var marker = new google.maps.Marker({
-                position: { lat: 31.969738, lng: 34.77278720000004 },
-                map: map
+            //Add a marker and an info window for each location.
+            $.each(locations, function (i, itemArray) {
+                //The info window creation.
+                var infowindow = new google.maps.InfoWindow({
+                    content: itemArray.Description,
+                    maxWidth: 200,
+                });
+                //The marker with the location's coordinates creation.
+                var marker = new google.maps.Marker({
+                    position: { lat: itemArray.Lat, lng: itemArray.Long },
+                    map: map,
+                    title: itemArray.Title
+                });
+
+                //Listen to click events on the marker to open the info window.
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
             });
         }
     </script>
