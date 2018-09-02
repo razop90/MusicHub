@@ -28,7 +28,8 @@
             display: block;
             width: 80%;
             margin: auto;
-            height: 80%
+            height: 80%;
+            cursor: pointer;
         }
 
         .div-body {
@@ -86,7 +87,10 @@
     <div id="bg">
         <img class="inner" src="~/images/background.jpg" alt="">
     </div>
-    <img src="~/images/header-logo.png" class="img-logo" />
+
+    <a href='@Url.Action("Index", "Home")'>
+        <img src="~/images/header-logo.png" class="img-logo" />
+    </a>
 
     <div class="navigation-container">
         <nav class="navbar navbar-inverse">
