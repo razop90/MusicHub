@@ -65,9 +65,16 @@ namespace MusicHub.Controllers
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+            var model = new LocationsViewModel()
+            {
+                Locations = new List<Location>
+                {
+                     new Location(){ Lat=31.969738,Long=34.77278720000004, Title="College of Management", Description="The College of Management Academic Studies (The COLLMAN) was founded in 1978. It is the first private, not for profit institute for higher education in Israel. Its first program was recognized by the Israeli Council for higher education 1986"},
+                     new Location(){ Lat=32.0494487,Long=34.960387500000024, Title="Raz's Home", Description="Raz's home in Elad city" }
+                }
+            };
 
-            return View();
+            return View(model);
         }
 
         public IActionResult Error()

@@ -1,17 +1,70 @@
-﻿@{
+﻿@model LocationsViewModel
+
+@using Newtonsoft.Json;
+@using MusicHub.Models.HomeViewModels;
+@{
     ViewData["Title"] = "Contact";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+<h2>@(ViewData["Title"] + " Us")</h2>
+
+<style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+        height: 500px;
+        width: 100%;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+</style>
 
 <address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
+    Elie Wiesel St. 2<br />
+    Rishon LeZion<br />
     <abbr title="Phone">P:</abbr>
-    425.555.0100
+    +972-3 963 4151
 </address>
 
 <address>
-    <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
+    <strong>Raz Vaknin:</strong> <a href="mailto:Support@example.com">razop90@gmail.com</a><br />
+    <strong>Baruch Yahalom:</strong> <a href="mailto:Support@example.com">baruch5551@gmail.com</a><br />
+    <strong>Alice Bor:</strong> <a href="mailto:Support@example.com">aliceka495@gmail.com</a><br />
+    <strong>Tzur Yoselzon:</strong> <a href="mailto:Support@example.com">tzuryoselzon@gmail.com</a><br />
 </address>
+
+<div>
+    <div id="map"></div>
+    <script>
+        //Getting the locations objects from the model.
+        var locations = @Html.Raw(JsonConvert.SerializeObject(Model.Locations));
+        var map;
+        function initMap() {
+            //Creating the map and initialize starting coordinates point for the view.
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 31.9730015, lng: 34.792501300000026 },
+                zoom: 12
+            });
+            //Add a marker and an info window for each location.
+            $.each(locations, function (i, itemArray) {
+                //The info window creation.
+                var infowindow = new google.maps.InfoWindow({
+                    content: itemArray.Description,
+                    maxWidth: 200,
+                });
+                //The marker with the location's coordinates creation.
+                var marker = new google.maps.Marker({
+                    position: { lat: itemArray.Lat, lng: itemArray.Long },
+                    map: map,
+                    title: itemArray.Title
+                });
+
+                //Listen to click events on the marker to open the info window.
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDXGjPlwDxj7LQaDP39VDp3COEh8ImumQ&callback=initMap"
+            async defer></script>
+</div>
