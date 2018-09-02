@@ -1,4 +1,8 @@
-﻿@{
+﻿@model MainViewModel
+
+@using MusicHub.Models.HomeViewModels
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -54,7 +58,7 @@
             height: 250px;
             position: absolute;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.3); 
+            background: rgba(0, 0, 0, 0.3);
         }
 
         .highlight-wrapper:before {
@@ -67,12 +71,11 @@
 </style>
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-    @{ var highlights = ViewData["Highlights"] as List<MusicHub.Classes.Home.Highlight>;
-        if (highlights != null)
+    @{if (Model.Highlights != null)
         {
             <div>
                 <ol class="carousel-indicators">
-                    @for (int i = 0; i < highlights.Count; i++)
+                    @for (int i = 0; i < Model.Highlights.Count; i++)
                     {
                         if (i == 0)
                         {
@@ -85,9 +88,10 @@
                     }
                 </ol>
                 <div class="carousel-inner" role="listbox">
-                    @{for (int i = 0; i < highlights.Count; i++)
+                    @{
+                        for (int i = 0; i < Model.Highlights.Count; i++)
                         {
-                            var highlight = highlights[i];
+                            var highlight = Model.Highlights[i];
                             string cla = i == 0 ? "item active" : "item";
 
                             <div id="main-wrap" class="@cla">

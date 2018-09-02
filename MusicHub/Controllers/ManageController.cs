@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MusicHub.Classes;
 using MusicHub.Models;
 using MusicHub.Models.ManageViewModels;
 using MusicHub.Services;
@@ -73,16 +74,14 @@ namespace MusicHub.Controllers
         {
             var user = await GetUserInfo();
 
-            //var info = await _signInManager.GetExternalLoginInfoAsync();
-            //ViewData.Add("Provider", info);
-
             var model = new IndexViewModel
             {
                 Username = user.UserName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
-                StatusMessage = StatusMessage
+                StatusMessage = StatusMessage,
+                IsAdmin = User.IsInRole(Consts.Admin)
             };
 
             return View(model);
@@ -313,6 +312,7 @@ namespace MusicHub.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = Consts.Admin)]
         public async Task<IActionResult> TwoFactorAuthentication()
         {
             var user = await GetUserInfo();
@@ -428,7 +428,7 @@ namespace MusicHub.Controllers
             await _userManager.SetTwoFactorEnabledAsync(user, false);
             await _userManager.ResetAuthenticatorKeyAsync(user);
             _logger.LogInformation("User with id '{UserId}' has reset their authentication app key.", user.Id);
-                       
+
             return RedirectToAction(nameof(EnableAuthenticator));
         }
 

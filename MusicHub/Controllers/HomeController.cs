@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MusicHub.Classes.Home;
 using MusicHub.Models;
+using MusicHub.Models.HomeViewModels;
 
 namespace MusicHub.Controllers
 {
@@ -17,6 +18,7 @@ namespace MusicHub.Controllers
         public HomeController()
         {
             //add highlights.
+            #region Highlights
             highlights = highlights = new List<Highlight>()
             {
                 new Highlight("Flow X Granrodeo - Howling",
@@ -43,14 +45,15 @@ namespace MusicHub.Controllers
                 @"~/images/Highlights/highlight4.png",
                 "Limbo on YouTube")
              };
+            #endregion
         }
 
         public IActionResult Index()
         {
-            if (!ViewData.ContainsKey("Highlights"))
-                ViewData.Add("Highlights", highlights);
+            var model = new MainViewModel()
+            { Highlights = highlights };
 
-            return View();
+            return View(model);
         }
 
         public IActionResult About()
