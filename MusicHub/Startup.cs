@@ -11,6 +11,7 @@ using MusicHub.Data;
 using MusicHub.Models;
 using MusicHub.Services;
 using Microsoft.AspNetCore.Identity;
+using MusicHub.Classes;
 
 namespace MusicHub
 {
@@ -72,7 +73,7 @@ namespace MusicHub
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -95,6 +96,54 @@ namespace MusicHub
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //Add users permissions roles.
+            CreateRoles(serviceProvider).Wait();
+        }
+
+        /// <summary>
+        /// Check if roles are exist, if not - assing them.
+        /// </summary>
+        /// <param name="serviceProvider">services</param>
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            //initializing custom roles 
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleNames = new string[] { Consts.Admin, Consts.Member };
+
+            IdentityResult roleResult;
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    //create the roles and add them to the database
+                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+
+            //Creating an admin user
+            var adminUser = new ApplicationUser
+            {
+                UserName = Configuration["Admin-Info:UserName"],
+                Email = Configuration["Admin-Info:Email"],
+                EmailConfirmed = true
+            };
+
+            string userPWD = Configuration["Admin-Info:Password"];
+            //Checking if the user doesn't exist in order to add it
+            var _user = await UserManager.FindByEmailAsync(adminUser.Email);
+            if (_user == null)
+            {
+                //trying to add the user into the db
+                var createAdminUser = await UserManager.CreateAsync(adminUser, userPWD);
+                if (createAdminUser.Succeeded)
+                {
+                    //Add the Admin role to the user
+                    await UserManager.AddToRoleAsync(adminUser, Consts.Admin);
+                }
+            }
         }
     }
 }

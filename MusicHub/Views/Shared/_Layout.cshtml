@@ -1,9 +1,74 @@
 ﻿<!DOCTYPE html>
+
 <html>
 <head>
+    <style type="text/css">
+        #bg {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            z-index: -1
+        }
+
+        .inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            min-width: 50%;
+            min-height: 50%;
+            z-index: -1
+        }
+
+        .img-logo {
+            display: block;
+            width: 80%;
+            margin: auto;
+            height: 80%
+        }
+
+        .div-body {
+            background-color: white;
+            padding-top: 20px;
+            padding-right: 50px;
+            padding-left: 50px;
+            margin-right: auto;
+            margin-left: auto;
+            min-height: 1000px;
+        }
+
+        .div-footer {
+            width: 100%;
+            background-color: black;
+            padding-top: 10px;
+            padding-right: 10px;
+            padding-left: 10px;
+            margin-right: auto;
+            margin-left: auto;
+            min-height: 100px;
+        }
+
+            .div-footer p {
+                color: white;
+                margin: 5px;
+                position: relative;
+                bottom: -20px;
+            }
+
+        .navigation-container {
+            padding: 15px;
+        }
+    </style>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MusicHub</title>
+
+    <title>@ViewData["Title"] - Music Hub</title>
+
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -16,36 +81,49 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 </head>
+
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">MusicHub</a>
+    <div id="bg">
+        <img class="inner" src="~/images/background.jpg" alt="">
+    </div>
+    <img src="~/images/header-logo.png" class="img-logo" />
+
+    <div class="navigation-container">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Music Hub</a>
+                </div>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                        <li><a asp-area="" asp-controller="Artist" asp-action="Index">Artists</a></li>
+                        <li><a asp-area="" asp-controller="Song" asp-action="Index">Songs</a></li>
+                    </ul>
+                    @await Html.PartialAsync("_LoginPartial")
+                </div>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    <li><a asp-area="" asp-controller="Artist" asp-action="Index">Artists</a></li>
-                    <li><a asp-area="" asp-controller="Song" asp-action="Index">Songs</a></li>
-                </ul>
-                @await Html.PartialAsync("_LoginPartial")
-            </div>
+        </nav>
+    </div>
+    <div>
+        <div class="container div-body">
+            @RenderBody()
+            <hr />
         </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
         <footer>
-            <p>&copy; 2018 - MusicHub</p>
+            <div class="container div-footer">
+                <p>&copy; 2018 - MusicHub</p>
+            </div>
         </footer>
     </div>
+
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
