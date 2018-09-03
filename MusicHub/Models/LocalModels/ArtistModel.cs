@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,6 +33,8 @@ namespace MusicHub.Models.LocalModels
         [Display(Name = "Last Name")]
         [StringLength(30, ErrorMessage = "Last name cannot be longer than 30 characters.")]
         public string LastName { get; set; }
+        [NotMapped]
+        public string FullName => string.Format("{0} {1}", Name, LastName);
         /// <summary>
         /// Contains song objects.
         /// </summary>

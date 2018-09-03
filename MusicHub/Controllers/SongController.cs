@@ -51,7 +51,8 @@ namespace MusicHub.Controllers
         // GET: Song/Create
         public IActionResult Create()
         {
-            ViewData["ArtistId"] = new SelectList(_context.Artists, "ID", "LastName");
+       
+            ViewData["ArtistId"] = new SelectList(_context.Artists, "ID", "FullName");
             // Generate new list with music generes
             var generes = Enum.GetValues(typeof(MusicGenre));
             // Attach the list to the view model
@@ -90,7 +91,8 @@ namespace MusicHub.Controllers
             {
                 return NotFound();
             }
-            ViewData["ArtistId"] = new SelectList(_context.Artists, "ID", "LastName", songModel.ArtistId);
+            ViewData["ArtistId"] = new SelectList(_context.Artists, "ID", "FullName", songModel.ArtistId);
+
             return View(songModel);
         }
 
