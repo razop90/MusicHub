@@ -56,6 +56,9 @@ namespace MusicHub.Controllers
         // GET: Artist/Create
         public IActionResult Create()
         {
+            // Populate all the songs because we use a new empty artist
+            PopulateAssignedSongsData(new ArtistModel { Songs = new List<SongModel>() });
+            // Now we can use the songs in the view
             return View();
         }
 
@@ -64,11 +67,16 @@ namespace MusicHub.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,LastName")] ArtistModel artistModel)
+        public async Task<IActionResult> Create([Bind("ID,Name,LastName")] ArtistModel artistModel, string[] selectedSongs)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(artistModel);
+                await _context.SaveChangesAsync();
+                // Init empty song list befor updating
+                artistModel.Songs = new List<SongModel>();
+                // Update in the DB, assign the selected songs this artist
+                UpdateArtistSongs(selectedSongs, artistModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -204,28 +212,23 @@ namespace MusicHub.Controllers
                 // Check if the current song from DB is selected by the view
                 if (selectedSongsHS.Contains(song.ID.ToString()))
                 {
-                    // Check if the artist is not already contain the current song and add it
+                    // Assign the song to the artist, if the artist isn't assigned yet
                     if (!artistSongs.Contains(song.ID))
                     {
-                        //artistToUpdate.Songs.Add(new SongModel { ArtistId = artistToUpdate.ID, ID = song.ID });
-                        SongModel songToAssignArtist = song;
-                        songToAssignArtist.Artist = artistToUpdate;
-                        songToAssignArtist.ArtistId = artistToUpdate.ID;
+                        song.Artist = artistToUpdate;
+                        song.ArtistId = artistToUpdate.ID;
+                        _context.Update(song);
                     }
                 }
                 else
                 {
-                    // If we got here than current DB song is not selected so we check if we need to remove it
+                    // If we are here than the song is not selected, and if the artist currently assigned to this song
+                    // we should than unassign the artist and update the song DB
                     if (artistSongs.Contains(song.ID))
                     {
-                        /*
-                        SongModel songToRemove = artistToUpdate.Songs.SingleOrDefault(i => i.ID == song.ID);
-                        _context.Remove(songToRemove);
-                        */
-                        SongModel songToUnassignArtist = song;
-                        songToUnassignArtist.Artist = null;
-                        songToUnassignArtist.ArtistId = null;
-                        _context.Update(songToUnassignArtist);
+                        song.Artist = null;
+                        song.ArtistId = null;
+                        _context.Update(song);
                     }
                 }
             }
