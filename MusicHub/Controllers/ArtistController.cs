@@ -94,25 +94,7 @@ namespace MusicHub.Controllers
             PopulateAssignedSongsData(artistModel);
             // send the model to the view
             return View(artistModel);
-        }
-
-        private void PopulateAssignedSongsData(ArtistModel artistModel)
-        {
-            var allSongs = _context.Songs;
-            var artistSongs = new HashSet<int>(artistModel.Songs.Select(song => song.ID));
-            var viewModel = new List<AssignedSongData>();
-            foreach (var song in allSongs)
-            {
-                viewModel.Add(new AssignedSongData
-                {
-                    SongID = song.ID,
-                    Title = song.Name,
-                    Assigned = artistSongs.Contains(song.ID)
-                });
-            }
-            //ViewBag.Songs = viewModel;
-            ViewData["Songs"] = viewModel;
-        }
+        }        
 
         // POST: Artist/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -152,6 +134,56 @@ namespace MusicHub.Controllers
             UpdateArtistSongs(selectedSongs, artistToUpdate);
             PopulateAssignedSongsData(artistToUpdate);
             return View(artistToUpdate);
+        }      
+
+        // GET: Artist/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var artistModel = await _context.Artists
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (artistModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(artistModel);
+        }
+
+        // POST: Artist/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var artistModel = await _context.Artists.Include(artist => artist.Songs).SingleOrDefaultAsync(m => m.ID == id);
+            // Update artist songs to unassign current artist
+            UpdateArtistSongs(new String[0], artistModel);   
+            // Remove the artist from the DB
+            _context.Artists.Remove(artistModel);            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private void PopulateAssignedSongsData(ArtistModel artistModel)
+        {
+            var allSongs = _context.Songs;
+            var artistSongs = new HashSet<int>(artistModel.Songs.Select(song => song.ID));
+            var viewModel = new List<AssignedSongData>();
+            foreach (var song in allSongs)
+            {
+                viewModel.Add(new AssignedSongData
+                {
+                    SongID = song.ID,
+                    Title = song.Name,
+                    Assigned = artistSongs.Contains(song.ID)
+                });
+            }
+            //ViewBag.Songs = viewModel;
+            ViewData["Songs"] = viewModel;
         }
 
         private void UpdateArtistSongs(string[] selectedSongs, ArtistModel artistToUpdate)
@@ -197,35 +229,6 @@ namespace MusicHub.Controllers
                     }
                 }
             }
-        }
-
-        // GET: Artist/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var artistModel = await _context.Artists
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if (artistModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(artistModel);
-        }
-
-        // POST: Artist/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var artistModel = await _context.Artists.SingleOrDefaultAsync(m => m.ID == id);
-            _context.Artists.Remove(artistModel);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool ArtistModelExists(int id)
