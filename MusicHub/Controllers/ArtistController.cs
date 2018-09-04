@@ -24,9 +24,40 @@ namespace MusicHub.Controllers
 
         // GET: Artist
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            return View(await _context.Artists.ToListAsync());
+            // Initiate model view data
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["LastNameSortParm"] = sortOrder == "LastName" ? "last_name_desc" : "LastName";
+            ViewData["CurrentFilter"] = searchString;
+            // Get all artists from DB
+            var artists = from a in _context.Artists
+                          select a;
+            // Check if we got search string
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                // search artists by first or last name or full name
+                artists = artists.Where(s => s.Name.Contains(searchString)
+                                       || s.LastName.Contains(searchString)
+                                       || s.FullName.Contains(searchString));
+            }
+            // sort the results
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    artists = artists.OrderByDescending(a => a.Name);
+                    break;
+                case "LastName":
+                    artists = artists.OrderBy(a => a.LastName);
+                    break;
+                case "last_name_desc":
+                    artists = artists.OrderByDescending(a => a.LastName);
+                    break;
+                default:
+                    artists = artists.OrderBy(a => a.Name);
+                    break;
+            }
+            return View(await artists.AsNoTracking().ToListAsync());
         }
 
         // GET: Artist/Details/5
