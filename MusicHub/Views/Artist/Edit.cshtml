@@ -4,13 +4,28 @@
     ViewData["Title"] = "Edit";
 }
 
-<h2>Edit</h2>
+<style>
+    /* Enlarge input fields on focus with 1 second delay */
+    .form-control:focus {
+        -webkit-transform: scale(1.03);
+        -webkit-transition: all 1s ease-in-out;
+        -ms-transform: scale(1.03);
+        transform: scale(1.03);
+        -moz-transition: all 1s ease-in-out;
+        -o-transition: all 1s ease-in-out;
+        transition: all 1s ease-in-out;
+    }
+</style>
 
-<h4>ArtistModel</h4>
+<h2>Edit Artist</h2>
+<a asp-action="Index">Back to Artists</a>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
@@ -22,11 +37,12 @@
                 <label asp-for="LastName" class="control-label"></label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
-            </div> 
-            
+            </div>
+
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <table>
+                    <table class="table table-responsive">
+                        <thead><h4>Select artists songs</h4></thead>
                         <tr>
                             @{
                                 int cnt = 0;
@@ -43,7 +59,7 @@
                                                name="selectedSongs"
                                                value="@song.SongID"
                                                @(Html.Raw(song.Assigned ? "checked=\"checked\"" : "")) />
-                                        @song.SongID @:  @song.Title
+                                        @song.Title
                                     @:</td>
                                 }
                             @:</tr>
@@ -51,16 +67,8 @@
                         </table>
                     </div>
                 </div>
-              
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
+            </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
