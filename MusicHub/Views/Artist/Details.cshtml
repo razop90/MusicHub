@@ -4,50 +4,32 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>ArtistModel</h4>
+<div class="">
+    <h1>@Html.DisplayFor(model => model.FullName) Songs</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></a> |
+        <a asp-action="Index">Back to Artists</a>
+    </div>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Songs)
-        </dt>
-        <dd>
-            <table class="table">
-                <tr>
-                    <th>Song Title</th>
-                    <th>Ganere</th>
-                </tr>
-                <!-- iterate for each song of the artist -->
-                @foreach (var song in Model.Songs)
-            {   <!-- Add table row with song name and genere -->
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => song.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => song.Genre)
-                    </td>
-                </tr>
+    <table class="table">
+        <tr>
+            <th>Song Title</th>
+            <th>Ganere</th>
+        </tr>
+        <!-- iterate for each song of the artist -->
+        @foreach (var song in Model.Songs)
+        {<!-- Add table row with song name and genere -->
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => song.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => song.Genre)
+            </td>
+            <td>
+                <a asp-controller="Song" asp-action="Details" asp-route-id="@song.ID">Details</a>
+            </td>
+        </tr>
         }
-            </table>
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+    </table>
+</div>    
