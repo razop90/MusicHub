@@ -92,8 +92,12 @@ namespace MusicHub.Controllers
                 return NotFound();
             }
             ViewData["ArtistId"] = new SelectList(_context.Artists, "ID", "FullName", songModel.ArtistId);
-
+            var generes = Enum.GetValues(typeof(MusicGenre));
+            // Attach the list to the view model
+            ViewData["Genres"] = new SelectList(generes);
+            // Return the View (in our case Create.cshtml)
             return View(songModel);
+            //return View(songModel);
         }
 
         // POST: Song/Edit/5
