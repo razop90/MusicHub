@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MusicHub.Classes.Home;
 using MusicHub.Models;
 using MusicHub.Models.LocalModels;
 
@@ -13,7 +14,7 @@ namespace MusicHub.Data
     {
         public DbSet<ArtistModel> Artists { get; set; }
         public DbSet<SongModel> Songs { get; set; }
-        //public DbSet<UserModel> Users { get; set; }
+        public DbSet<Location> Locations { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
