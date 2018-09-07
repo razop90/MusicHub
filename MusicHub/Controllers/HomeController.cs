@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MusicHub.Classes.Home;
+using MusicHub.Data;
 using MusicHub.Models;
 using MusicHub.Models.HomeViewModels;
 
@@ -15,8 +16,12 @@ namespace MusicHub.Controllers
         [TempData]
         List<Highlight> highlights { get; set; }
 
-        public HomeController()
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context)
         {
+            _context = context;
+
             //add highlights.
             #region Highlights
             highlights = highlights = new List<Highlight>()
@@ -58,8 +63,6 @@ namespace MusicHub.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
-
             return View();
         }
 
@@ -67,11 +70,7 @@ namespace MusicHub.Controllers
         {
             var model = new LocationsViewModel()
             {
-                Locations = new List<Location>
-                {
-                     new Location(){ Lat=31.969738,Long=34.77278720000004, Title="College of Management", Description="The College of Management Academic Studies (The COLLMAN) was founded in 1978. It is the first private, not for profit institute for higher education in Israel. Its first program was recognized by the Israeli Council for higher education 1986"},
-                     new Location(){ Lat=32.0494487,Long=34.960387500000024, Title="Raz's Home", Description="Raz's home in Elad city" }
-                }
+                Locations = _context.Locations.ToList()
             };
 
             return View(model);

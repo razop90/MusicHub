@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using MusicHub.Data;
 using System;
 
 namespace MusicHub.Data.Migrations
@@ -126,6 +124,27 @@ namespace MusicHub.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("MusicHub.Classes.Home.Location", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description")
+                        .IsRequired();
+
+                    b.Property<double>("Lat");
+
+                    b.Property<double>("Long");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Locations");
+                });
+
             modelBuilder.Entity("MusicHub.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -202,8 +221,6 @@ namespace MusicHub.Data.Migrations
 
                     b.Property<int?>("ArtistId");
 
-                    b.Property<int?>("ArtistModelID");
-
                     b.Property<string>("Composer")
                         .HasMaxLength(50);
 
@@ -218,7 +235,7 @@ namespace MusicHub.Data.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ArtistModelID");
+                    b.HasIndex("ArtistId");
 
                     b.ToTable("Songs");
                 });
@@ -270,9 +287,9 @@ namespace MusicHub.Data.Migrations
 
             modelBuilder.Entity("MusicHub.Models.LocalModels.SongModel", b =>
                 {
-                    b.HasOne("MusicHub.Models.LocalModels.ArtistModel")
+                    b.HasOne("MusicHub.Models.LocalModels.ArtistModel", "Artist")
                         .WithMany("Songs")
-                        .HasForeignKey("ArtistModelID");
+                        .HasForeignKey("ArtistId");
                 });
 #pragma warning restore 612, 618
         }
