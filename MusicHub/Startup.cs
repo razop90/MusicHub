@@ -112,14 +112,13 @@ namespace MusicHub
             var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleNames = new string[] { Consts.Admin, Consts.Member };
 
-            IdentityResult roleResult;
             foreach (var roleName in roleNames)
             {
                 var roleExist = await RoleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
                     //create the roles and add them to the database
-                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                    await RoleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
 
