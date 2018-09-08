@@ -38,10 +38,11 @@ namespace MusicHub.Classes
                 var flowXgranrodeo = new ArtistModel { Name = "Flow X Granrodeo", LastName = "" };
                 var ellieGoulding = new ArtistModel { Name = "Ellie", LastName = "Goulding" };
                 var demiLovato = new ArtistModel { Name = "Demi", LastName = "Lovato" };
+                var takeshiSaito = new ArtistModel { Name = "Takeshi", LastName = "Saito" };
 
                 context.Artists.AddRange(new ArtistModel[] { bebeRexha, maroon5, arianaGrande,
                     yukiHayashi, uverWorld, charliePuth, daddyYankee, flowXgranrodeo, ellieGoulding
-                ,demiLovato});
+                ,demiLovato, takeshiSaito});
                 context.SaveChanges();
 
                 #endregion
@@ -51,19 +52,20 @@ namespace MusicHub.Classes
                 var songs = new SongModel[]
                 {
                  new SongModel{Artist=bebeRexha, Name="I'm A Mess", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/MnmlPLh0CLw"},
-                 new SongModel{Artist=maroon5, Name="Girls Like You ft. Cardi B", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/aJOTlE1K90k"},
                  new SongModel{Artist=maroon5, Name="Animals", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/7BJ3ZXpserc"},
-                 new SongModel{Artist=arianaGrande, Name="God Is A Woman", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/kHLHSlExFis"},
+                 new SongModel{Artist=maroon5, Name="Girls Like You ft. Cardi B", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/aJOTlE1K90k"},
                  new SongModel{Artist=arianaGrande, Name="Break Free ft. Zedd", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/L8eRzOYhLuw"},
+                 new SongModel{Artist=flowXgranrodeo, Name="Howling", Genre=MusicGenre.Japanese, YouTubeUrl=@"https://www.youtube.com/embed/kAg5PKPSQ3c"},
+                 new SongModel{Artist=ellieGoulding, Name="Burn", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/CGyEd0aKWZE"},
+                 new SongModel{Artist=demiLovato, Name="Let It Go (from Frozen)", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/kHue-HaXXzg"},
+                 new SongModel{Artist=demiLovato, Name="Heart Attack", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/AByfaYcOm4A"},
+                 new SongModel{Artist=demiLovato, Name="Sober", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/vORIohoI4m0"},
                  new SongModel{Artist=yukiHayashi, Name="All Might vs All For One Theme", Genre=MusicGenre.Soundtrack, Composer="Yuki Hayashi", YouTubeUrl=@"https://www.youtube.com/embed/STwVKKhZOSI"},
                  new SongModel{Artist=uverWorld, Name="ODD FUTURE", Genre=MusicGenre.Japanese, YouTubeUrl=@"https://www.youtube.com/embed/gXAHzzL2Tv0"},
                  new SongModel{Artist=charliePuth, Name="How Long", Genre=MusicGenre.Punk, YouTubeUrl=@"https://www.youtube.com/embed/3qTAxAEhH08"},
                  new SongModel{Artist=daddyYankee, Name="Limbo", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/6BTjG-dhf5s"},
-                 new SongModel{Artist=flowXgranrodeo, Name="Howling", Genre=MusicGenre.Japanese, YouTubeUrl=@"https://www.youtube.com/embed/kAg5PKPSQ3c"},
-                 new SongModel{Artist=ellieGoulding, Name="Burn", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/CGyEd0aKWZE"},
-                 new SongModel{Artist=demiLovato, Name="Heart Attack", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/AByfaYcOm4A"},
-                 new SongModel{Artist=demiLovato, Name="Let It Go (from Frozen)", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/kHue-HaXXzg"},
-                 new SongModel{Artist=demiLovato, Name="Sober", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/vORIohoI4m0"},
+                 new SongModel{Artist=arianaGrande, Name="God Is A Woman", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/kHLHSlExFis"},
+                 new SongModel{Artist=takeshiSaito, Name="Hanezeve Caradhina", Genre=MusicGenre.Japanese, YouTubeUrl=@"https://www.youtube.com/embed/KPxSS1zHWwQ"},
                 };
 
                 context.Songs.AddRange(songs);
