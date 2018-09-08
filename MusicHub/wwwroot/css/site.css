@@ -84,17 +84,17 @@
         display: none;
     }
 }
- /*/*Define custom font
+ /*Define custom font*/
 @font-face {
     font-family: 'HandWrite';
-    src: url('../fonts/KaushanScript-Regular.otf#') format('opentype');
+    src: url('../fonts/quicksand/Quicksand-Bold.otf#') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
-Define css class with using of HandWrite custom font 
+/*Define css class with using of HandWrite custom font */
 .font-hand {
     font-family: HandWrite;
-}*/
+}
 
 @media screen and (max-width: 600px) {
     #song_details_container {
