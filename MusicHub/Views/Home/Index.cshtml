@@ -1,4 +1,5 @@
 ﻿@model MainViewModel
+@using Newtonsoft.Json;
 
 @using MusicHub.Models.HomeViewModels
 
@@ -52,6 +53,7 @@
     .highlight-wrapper {
         width: 100%;
     }
+
         .highlight-wrapper:before, .highlight-wrapper:after {
             content: '';
             width: 100%;
@@ -68,13 +70,70 @@
         .highlight-wrapper:after {
             right: 0;
         }
+
+    #image {
+        min-height: 240px;
+        min-width: 200px;
+    }
 </style>
 
+
+@* BELONGS TO RAZ - DO NOT REMOVE! ~thanx <3
+    <style>
+        /* divide multiple-columns with xxlarge font size*/
+        #song_details_container {
+            column-count: 2;
+        }
+
+        /*#youtube_container_div {
+            float: left;
+            margin: 20px;
+        }
+
+        #frame {
+            display: none;
+        }
+
+        #youtube_img {
+            float: left;
+            width: 120px;
+            height: 90px;
+            cursor: pointer;
+        }*/
+    </style>
+
+    @*<head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            var youtube_url = @Html.Raw(JsonConvert.SerializeObject(Model.YouTubeUrl));
+
+            $('#frame').ready(function ()
+            {
+                var iframe = document.getElementById('frame')
+                var youtube_video_id = youtube_url.match(/youtube\.com.*(\?v=|\/embed\/)(.{11})/).pop();
+
+                if (youtube_video_id.length >=5)
+               {
+                    var video_thumbnail = $('<img id="youtube_img" src="http://img.youtube.com/vi/' + youtube_video_id + '/maxresdefault.jpg">');
+                    $('#youtube_container_div').append(video_thumbnail);
+
+                    $('#youtube_img').click(function () {
+                        iframe.fadeToggle('400');
+                    });
+                }
+            });
+        </script>
+    </head>*@
+
+
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+    @*checking if there are highlights*@
     @{if (Model.Highlights != null)
         {
             <div>
                 <ol class="carousel-indicators">
+                    @*looping on all highlights and add bolets for each item for the home page songs-display control
+                        set the first item to be the active one (the first focused item)*@
                     @for (int i = 0; i < Model.Highlights.Count; i++)
                     {
                         if (i == 0)
@@ -89,13 +148,15 @@
                 </ol>
                 <div class="carousel-inner" role="listbox">
                     @{
+                        //looping on all highligts and add their data in a listbox
+                        //set the first item to be the active one (the first focused item) 
                         for (int i = 0; i < Model.Highlights.Count; i++)
                         {
                             var highlight = Model.Highlights[i];
                             string cla = i == 0 ? "item active" : "item";
 
                             <div id="main-wrap" class="@cla">
-                                <img src="@Url.Content(highlight.ImagePath)" alt="Visual Studio" class="img-responsive" />
+                                <img id="image" src="http://img.youtube.com/vi/@highlight.YoutubeId/maxresdefault.jpg" class="img-responsive" />
 
                                 <div class="highlight-wrapper">
                                     <div class="carousel-caption" role="option">
@@ -104,10 +165,10 @@
                                         </h1>
 
                                         <div class="highlight-body">
-                                            <p> @highlight.Body</p>
+                                            <p>@highlight.Body</p>
                                         </div>
 
-                                        <a class="highlight-button" href="@highlight.HyperLink">
+                                        <a class="highlight-button" href="https://www.youtube.com/watch?v=@highlight.YoutubeId">
                                             @highlight.ButtonContent
                                         </a>
                                     </div>
@@ -128,43 +189,3 @@
         }
     }
 </div>
-
-@*<div class="row">
-        <div class="col-md-3">
-            <h2>Application uses</h2>
-            <ul>
-                <li>Sample pages using ASP.NET Core MVC</li>
-                <li>Theming using <a href="https://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
-            </ul>
-        </div>
-        <div class="col-md-3">
-            <h2>How to</h2>
-            <ul>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=398600">Add a Controller and View</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkId=699315">Manage User Secrets using Secret Manager.</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkId=699316">Use logging to log a message.</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkId=699317">Add packages using NuGet.</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkId=699319">Target development, staging or production environment.</a></li>
-            </ul>
-        </div>
-        <div class="col-md-3">
-            <h2>Overview</h2>
-            <ul>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Conceptual overview of what is ASP.NET Core</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-            </ul>
-        </div>
-        <div class="col-md-3">
-            <h2>Run &amp; Deploy</h2>
-            <ul>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Run your app</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=517853">Run tools such as EF migrations and more</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
-            </ul>
-        </div>
-    </div>*@

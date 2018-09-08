@@ -13,50 +13,47 @@ namespace MusicHub.Controllers
 {
     public class HomeController : Controller
     {
-        [TempData]
-        List<Highlight> highlights { get; set; }
+        //[TempData]
+        //List<Highlight> highlights { get; set; }
 
         private readonly ApplicationDbContext _context;
 
         public HomeController(ApplicationDbContext context)
         {
             _context = context;
-
-            //add highlights.
-            #region Highlights
-            highlights = highlights = new List<Highlight>()
-            {
-                new Highlight("Flow X Granrodeo - Howling",
-                "Howling is the 1st opening theme song of Season 2 of The Seven Deadly Sins anime series",
-                @"https://www.youtube.com/watch?v=kAg5PKPSQ3c",
-                @"~/images/Highlights/highlight1.jpg",
-                "Howling on YouTube"),
-
-                new Highlight("Ariana Grande – ​God Is A Woman",
-                "God Is a Woman (stylized in sentence case) is a song by American singer Ariana Grande",
-                @"https://www.youtube.com/watch?v=kHLHSlExFis",
-                @"~/images/Highlights/highlight2.jpg",
-                "​God Is A Woman on YouTube"),
-
-                 new Highlight("Charlie Puth - How Long",
-                "How Long is a song recorded and produced by American singer Charlie Puth",
-                @"https://www.youtube.com/watch?v=CwfoyVa980U",
-                @"~/images/Highlights/highlight3.jpg",
-                "How Long on YouTube"),
-
-                new Highlight("Daddy Yankee - Limbo",
-                "Limbo is a song by Puerto Rican reggaeton recording artist Daddy Yankee from his sixth studio album Prestige (2012)",
-                @"https://www.youtube.com/watch?v=6BTjG-dhf5s",
-                @"~/images/Highlights/highlight4.png",
-                "Limbo on YouTube")
-             };
-            #endregion
         }
 
         public IActionResult Index()
         {
+            //Getting songs and artist collections from db.
+            var songs = _context.Songs.ToList();
+            var artists = _context.Artists.ToList();
+
+            //Join both collection by artist id and take data.
+            var query = (from song in songs
+                         join artist in artists
+                         on song.ArtistId equals artist.ID
+                         where !string.IsNullOrEmpty(song.YouTubeUrl) && song.ArtistId != null
+                         select new
+                         {
+                             song.Name,
+                             song.YouTubeID,
+                             artist.FullName
+                         }).ToList();
+
+            //creating highlights - takes the most 4 recent songs.
+            var highlights = new List<Highlight>();
+            for (int i = query.Count - 1; i > query.Count - 5; i--)
+            {
+                var highlight = query[i];
+                highlights.Add(new Highlight(highlight.Name, "By " + highlight.FullName, highlight.YouTubeID, "To " + highlight.Name + " On YouTube"));
+            }
+
+            //Creating the model with the highlights.
             var model = new MainViewModel()
-            { Highlights = highlights };
+            {
+                Highlights = highlights
+            };
 
             return View(model);
         }

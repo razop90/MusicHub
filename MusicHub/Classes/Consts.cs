@@ -50,14 +50,14 @@ namespace MusicHub.Classes
 
                 var songs = new SongModel[]
                 {
-                 new SongModel{Artist=bebeRexha, Name="I'm A Mess", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/LdH7aFjDzjI"},
+                 new SongModel{Artist=bebeRexha, Name="I'm A Mess", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/MnmlPLh0CLw"},
                  new SongModel{Artist=maroon5, Name="Girls Like You ft. Cardi B", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/aJOTlE1K90k"},
                  new SongModel{Artist=maroon5, Name="Animals", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/7BJ3ZXpserc"},
                  new SongModel{Artist=arianaGrande, Name="God Is A Woman", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/kHLHSlExFis"},
                  new SongModel{Artist=arianaGrande, Name="Break Free ft. Zedd", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/L8eRzOYhLuw"},
                  new SongModel{Artist=yukiHayashi, Name="All Might vs All For One Theme", Genre=MusicGenre.Soundtrack, Composer="Yuki Hayashi", YouTubeUrl=@"https://www.youtube.com/embed/STwVKKhZOSI"},
                  new SongModel{Artist=uverWorld, Name="ODD FUTURE", Genre=MusicGenre.Japanese, YouTubeUrl=@"https://www.youtube.com/embed/gXAHzzL2Tv0"},
-                 new SongModel{Artist=charliePuth, Name="How Long", Genre=MusicGenre.Punk, YouTubeUrl=@"https://www.youtube.com/embed/CwfoyVa980U"},
+                 new SongModel{Artist=charliePuth, Name="How Long", Genre=MusicGenre.Punk, YouTubeUrl=@"https://www.youtube.com/embed/3qTAxAEhH08"},
                  new SongModel{Artist=daddyYankee, Name="Limbo", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/6BTjG-dhf5s"},
                  new SongModel{Artist=flowXgranrodeo, Name="Howling", Genre=MusicGenre.Japanese, YouTubeUrl=@"https://www.youtube.com/embed/kAg5PKPSQ3c"},
                  new SongModel{Artist=ellieGoulding, Name="Burn", Genre=MusicGenre.Pop, YouTubeUrl=@"https://www.youtube.com/embed/CGyEd0aKWZE"},

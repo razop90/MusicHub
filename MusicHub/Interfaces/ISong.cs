@@ -15,5 +15,6 @@ namespace MusicHub.Interfaces
         string Composer { get; set; }
         DateTime ReleaseDate { get; set; }
         string YouTubeUrl { get; set; }
+        string YouTubeID { get; }
     }
 }
