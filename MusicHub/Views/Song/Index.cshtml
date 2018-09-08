@@ -4,45 +4,73 @@
     ViewData["Title"] = "Songs";
 }
 
-<h2>@ViewData["Title"]</h2>
+<style>
+    .btn-glyphicon {
+        padding: 8px;
+        background: #ffffff;
+        margin-right: 4px;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+    .icon-btn {
+        padding: 1px 15px 3px 2px;
+        border-radius: 50px;
+    }
+</style>
+
+<h1>@ViewData["Title"]</h1>
+<div class="container-fluid py-3 mt-3">
+    <div class="row">
+        <form asp-action="Index" method="get" class="form-search form-inline">
+            <a asp-action="Create" class="btn icon-btn btn-success">
+                <span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>
+                Create Song
+            </a>
+            <div class="input-group pull-right">
+                <input type="text" name="SearchString" value="@ViewData["currentFilter"]" class="form-control search-query" placeholder="Find song by name" />
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+                </span>
+            </div>
+            <a asp-action="Index" class="btn btn-default pull-right">Back to Full List</a>
+        </form>
+    </div>
+</div>
+
+<table class="table table-hover">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Name)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Artist)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ArtistSortParm"]">@Html.DisplayNameFor(model => model.Artist)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Genre)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["GenreSortParm"]">@Html.DisplayNameFor(model => model.Genre)</a>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Artist.Name)
-                @Html.DisplayFor(modelItem => item.Artist.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Artist.Name)
+                    @Html.DisplayFor(modelItem => item.Artist.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-pencil"></span></a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID"><span class="glyphicon glyphicon-trash"></span></a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
