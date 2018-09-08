@@ -4,13 +4,20 @@
     ViewData["Title"] = "Details";
 }
 
+<style>
+    #myCanvas {
+        border: 0px solid #d3d3d3;
+        border-radius: 0px 102px;
+        width: 100%;
+    }
+</style>
+
 <div class="">
-    <h1>@Html.DisplayFor(model => model.FullName) Songs</h1>
+    <h1>@Html.DisplayFor(model => model.FullName)</h1>
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></a> |
-        <a asp-action="Index">Back to Artists</a>
+        <a asp-action="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></a>        
     </div>
-    <hr />
+    <canvas id="myCanvas" height="3"></canvas>
     <table class="table">
         <tr>
             <th>Song Title</th>
@@ -19,17 +26,30 @@
         <!-- iterate for each song of the artist -->
         @foreach (var song in Model.Songs)
         {<!-- Add table row with song name and genere -->
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => song.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => song.Genre)
-            </td>
-            <td>
-                <a asp-controller="Song" asp-action="Details" asp-route-id="@song.ID">Details</a>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => song.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => song.Genre)
+                </td>
+                <td>
+                    <a asp-controller="Song" asp-action="Details" asp-route-id="@song.ID">Details</a>
+                </td>
+            </tr>
         }
     </table>
-</div>    
+</div>
+<script type="text/javascript">
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+
+    // Create gradient
+    var grd = ctx.createLinearGradient(0, 0, 200, 3);
+    grd.addColorStop(0, "DeepSkyBlue ");
+    grd.addColorStop(1, "white");
+
+    // Fill with gradient
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 200, 3);
+</script>
