@@ -4,12 +4,21 @@
     ViewData["Title"] = "Details";
 }
 
+<style>
+    /* divide multiple-columns with xxlarge font size*/
+    #song_details_container {
+        column-count: 2;
+        font-size: xx-large;
+    }
+}
+</style>
+
 <h2>Details</h2>
-<div>
+<div id="song_details_container">
+    @if (@Model.YouTubeUrl!=null) {
     <iframe width="500" height="400"
             src="@Model.YouTubeUrl"></iframe>
-</div>
-<div>
+    }
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Name)
