@@ -12,10 +12,10 @@
     }
 </style>
 
-<div class="">
+<div>
     <h1>@Html.DisplayFor(model => model.FullName)</h1>
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></a>        
+        <a asp-action="Edit" asp-route-id="@Model.ID" title="edit artist"><span class="glyphicon glyphicon-pencil" /></a>        
     </div>
     <canvas id="myCanvas" height="3"></canvas>
     <table class="table">

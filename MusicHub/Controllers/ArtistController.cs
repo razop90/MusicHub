@@ -36,10 +36,9 @@ namespace MusicHub.Controllers
             // Check if we got search string
             if (!String.IsNullOrEmpty(searchString))
             {
-                // search artists by first or last name or full name
+                // search artists by name
                 artists = artists.Where(s => s.Name.Contains(searchString)
-                                       || s.LastName.Contains(searchString)
-                                       || s.FullName.Contains(searchString));
+                                       || s.LastName.Contains(searchString));
             }
             // sort the results
             switch (sortOrder)

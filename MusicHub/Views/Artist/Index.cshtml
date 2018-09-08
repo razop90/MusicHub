@@ -17,22 +17,21 @@
     }
 </style>
 
-<h2>@ViewData["Title"]</h2>
-<div class="container py-3 mt-3">
+<h1>@ViewData["Title"]</h1>
+<div class="container-fluid py-3 mt-3">
     <div class="row">        
         <form asp-action="Index" method="get" class="form-search form-inline">
             <a asp-action="Create" class="btn icon-btn btn-success">
                 <span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>
                 Create Artist
             </a>
-            <div class="input-group">
+            <div class="input-group pull-right">
                 <input type="text" name="SearchString" value="@ViewData["currentFilter"]" class="form-control search-query" placeholder="Find artist by name" />
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
                 </span>
-
             </div>
-            <a asp-action="Index">Back to Full List</a>
+            <a asp-action="Index" class="btn btn-default pull-right">Back to Full List</a>
         </form>
         </div>
     </div>
