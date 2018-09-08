@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MusicHub.Classes.Home;
 using MusicHub.Data;
 using MusicHub.Models;
-using MusicHub.Models.HomeViewModels;
 
 namespace MusicHub.Controllers
 {
@@ -57,13 +55,7 @@ namespace MusicHub.Controllers
                 }
             }
 
-            //Creating the model with the highlights.
-            var model = new MainViewModel()
-            {
-                Highlights = highlights
-            };
-
-            return View(model);
+            return View(highlights);
         }
 
         public IActionResult About()
@@ -73,12 +65,9 @@ namespace MusicHub.Controllers
 
         public IActionResult Contact()
         {
-            var model = new LocationsViewModel()
-            {
-                Locations = _context.Locations.ToList()
-            };
+            var locations = _context.Locations.ToList();
 
-            return View(model);
+            return View(locations);
         }
 
         public IActionResult Error()
