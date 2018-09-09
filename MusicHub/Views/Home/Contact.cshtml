@@ -1,7 +1,7 @@
-﻿@model LocationsViewModel
+﻿@model List<Location>
 
 @using Newtonsoft.Json;
-@using MusicHub.Models.HomeViewModels;
+@using MusicHub.Classes.Home;
 @{
     ViewData["Title"] = "Contact";
 }
@@ -35,8 +35,8 @@
 <div>
     <div id="map"></div>
     <script>
-        //Getting the locations objects from the model.
-        var locations = @Html.Raw(JsonConvert.SerializeObject(Model.Locations));
+        //Getting the locations objects (the model itself).
+        var locations = @Html.Raw(JsonConvert.SerializeObject(Model));
         var map;
         function initMap() {
             //Creating the map and initialize starting coordinates point for the view.
