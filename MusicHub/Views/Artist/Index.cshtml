@@ -15,56 +15,108 @@
         padding: 1px 15px 3px 2px;
         border-radius: 50px;
     }
+
+    p {
+        cursor: pointer;
+    }
 </style>
 
 <h1>@ViewData["Title"]</h1>
 <div class="container-fluid py-3 mt-3">
-    <div class="row">        
+    <div class="row">
         <form asp-action="Index" method="get" class="form-search form-inline">
             <a asp-action="Create" class="btn icon-btn btn-success">
                 <span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>
                 Create Artist
             </a>
             <div class="input-group pull-right">
-                <input type="text" name="SearchString" value="@ViewData["currentFilter"]" class="form-control search-query" placeholder="Find artist by name" />
+                <input id="search_text" type="text" class="form-control search-query" placeholder="Find artist by name" />
                 <span class="input-group-btn">
-                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+                    <button class="btn btn-primary" disabled><i class="glyphicon glyphicon-search"></i></button>
                 </span>
             </div>
-            <a asp-action="Index" class="btn btn-default pull-right">Back to Full List</a>
+            <input id="back_btn" type="button" value="Back to Full List" class="btn btn-default pull-right" />
         </form>
-        </div>
     </div>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <!-- Sort by links -->
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Name)</a>
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["LastNameSortParm"]">@Html.DisplayNameFor(model => model.LastName)</a>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-pencil"></span></a> |
-                        <a asp-action="Delete" asp-route-id="@item.ID"><span class="glyphicon glyphicon-trash"></span></a> |
-                        <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+</div>
 
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div id="refTable">
+    @Html.Partial("_Partial_Artists_Table", Model)
+</div>
+
+@section Scripts
+    {
+    <script>
+        //NOTE: the registration process is made several times, again and again, because
+        //when the partial view updates with the new data, the previous registration
+        //is removed so we need to register again in order to apply our sorting actions.
+
+        //register to event 'ready' when the view is ready.
+        $(document).ready(function () {
+            //register to event 'click' on back_btn.
+            $("#back_btn").click(function () {
+                //apply ajax.
+                $.ajax({
+                    //our action url.
+                    url: "/Artist/UndoSearch",
+                    //our message type is get, cuz we want to recieve the new artists collection.
+                    type: "GET",
+                })
+                    //when it's done - set the new collection in the partial view,
+                    //then set the search box value to none, and register again for the 
+                    //sorting links.
+                    .done(function (partialViewResult) {
+                        $("#refTable").html(partialViewResult);
+                        document.getElementById('search_text').value = "";
+                        registerSorting();
+                    });
+            })
+        })
+
+        $(document).ready(function () {
+            $("#search_text").keyup(function () {
+                $.ajax({
+                    url: "/Artist/Search",
+                    type: "GET",
+                    data: { "searchString": $("#search_text").val() }
+                })
+                    .done(function (partialViewResult) {
+                        $("#refTable").html(partialViewResult);
+                        registerSorting();
+                    });
+            })
+        })
+
+        $(document).ready(function () {
+            registerSorting();
+        })
+
+        //register to click event two links - name and last name.
+        //both are located in the partial view.
+        function registerSorting() {
+            $("#search_name").click(function () {
+                $.ajax({
+                    url: "/Artist/Sort",
+                    type: "GET",
+                    data: { "sortBy": "name", "searchString": $("#search_text").val() }
+                })
+                    .done(function (partialViewResult) {
+                        $("#refTable").html(partialViewResult);
+                        registerSorting();
+                    });
+            })
+
+            $("#search_last_name").click(function () {
+                $.ajax({
+                    url: "/Artist/Sort",
+                    type: "GET",
+                    data: { "sortBy": "last_name", "searchString": $("#search_text").val() }
+                })
+                    .done(function (partialViewResult) {
+                        $("#refTable").html(partialViewResult);
+                        registerSorting();
+                    });
+            })
+        }
+    </script>
+}
