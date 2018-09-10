@@ -21,8 +21,16 @@
         width: auto;
     }
 
-    .youtube_display {
-       
+    .artist_section a {
+        font-size: 16px;
+    }
+
+    .artist_section b {
+        font-size: 16px;
+    }
+
+    a:hover {
+        text-decoration-line: none;
     }
 </style>
 
@@ -35,21 +43,25 @@
             <a asp-action="Edit" title="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></span></a>
         </div>
     </div>
-    <a asp-controller="Artist" asp-action="Details" asp-route-id="@Model.ArtistId">
-        <h4>
-            @Html.DisplayFor(model => model.Artist.Name)
-            @Html.DisplayFor(model => model.Artist.LastName)
-        </h4>
-    </a>   
-
-    @Html.Partial("_Partial_Canvas_Decor")
-
     <div>
-        <iframe class="youtube_display" width="640" height="390" src="https://www.youtube.com/embed/@Model.YouTubeID" frameborder="0"
+        <span class="artist_section">
+            <b>by</b>
+            <a asp-controller="Artist" asp-action="Details" asp-route-id="@Model.ArtistId">
+                @Html.DisplayFor(model => model.Artist.Name)
+                @Html.DisplayFor(model => model.Artist.LastName)
+            </a>
+        </span>
+    </div>
+</div>
+@Html.Partial("_Partial_Canvas_Decor")
+
+<div id="song_details_container">
+    <div>
+        <iframe width="640" height="390" src="https://www.youtube.com/embed/@Model.YouTubeID" frameborder="0"
                 allowfullscreen></iframe>
     </div>
     <div>
-        <dl class="dl-horizontal">          
+        <dl class="dl-horizontal">
             <dt>
                 @Html.DisplayNameFor(model => model.Genre)
             </dt>

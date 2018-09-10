@@ -9,21 +9,19 @@
     .form-control:focus {
         -webkit-transform: scale(1.03);
         -webkit-transition: all 1s ease-in-out;
-
         -ms-transform: scale(1.03);
-        
         transform: scale(1.03);
-        
         -moz-transition: all 1s ease-in-out;
         -o-transition: all 1s ease-in-out;
         transition: all 1s ease-in-out;
     }
+
     a:hover {
         text-decoration-line: none;
     }
 </style>
 
-<h2>Create Artist</h2>
+<h2>Create new Artist</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -71,9 +69,13 @@
                     </div>
                 </div>
             </form>
+        </div>
     </div>
-</div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

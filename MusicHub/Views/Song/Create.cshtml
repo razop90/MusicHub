@@ -4,7 +4,13 @@
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
+<style>
+    a:hover {
+        text-decoration-line: none;
+    }
+</style>
+
+<h2>Create New Song</h2>
 
 <hr />
 <div class="row">
@@ -41,7 +47,7 @@
                 <span asp-validation-for="YouTubeUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
