@@ -364,7 +364,6 @@ namespace MusicHub.Controllers
                 }
                 AddErrors(result);
             }
-            //}
 
             ViewData["ReturnUrl"] = returnUrl;
             return View(nameof(ExternalLogin), model);

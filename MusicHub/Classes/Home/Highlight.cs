@@ -7,17 +7,25 @@ namespace MusicHub.Classes.Home
 {
     public class Highlight
     {
-        public string Title { get; set; }
+        public int SongID { get; set; }
+        public int ArtistID { get; set; }
+        public string Genre { get; set; }
+        public string ArtistName { get; set; }
+        public string SongName { get; set; }
         public string Body { get; set; }
         public string YoutubeId { get; set; }
         public string ButtonContent { get; set; }
 
-        public Highlight(string title, string body, string youtubeId, string buttonContent)
+        public Highlight(string genre, string body, string youtubeId, string buttonContent,int songId,int artistId, string artistName, string songName)
         {
-            Title = title;
+            SongID = songId;
+            ArtistID = artistId;
+            Genre = genre;
             Body = body;
             YoutubeId = youtubeId;
             ButtonContent = buttonContent;
+            ArtistName = artistName;
+            SongName = songName;
         }
     }
 }
