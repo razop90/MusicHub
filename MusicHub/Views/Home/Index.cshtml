@@ -1,26 +1,33 @@
-﻿@model List<Highlight>
+﻿@model MusicHub.Models.HomeViewModels.IndexViewModel
 
-@using MusicHub.Classes.Home
-
+@using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <style>
     .highlight-title {
-        font-size: 30px;
+        font-size: 25px;
         color: darkcyan;
         line-height: 1;
         text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
         text-align: center;
     }
 
-    .highlight-body {
-        font-size: 16px;
+    .highlight-body b {
+        font-size: 14px;
         color: white;
-        line-height: 1;
-        text-align: center;
     }
+
+    .highlight-body a {
+        font-size: 14px;
+        color: #289dcc;
+    }
+
+        .highlight-body a:hover {
+            color: #48b9e7;
+            text-decoration-line: none;
+        }
 
     .highlight-button {
         background-color: #d51000;
@@ -29,14 +36,20 @@
         padding: 15px 32px;
         text-align: center;
         text-decoration: none;
-        font-size: 16px;
+        font-size: 14px;
         margin: 4px 2px;
         cursor: pointer;
         vertical-align: bottom;
+        border-radius: 2px;
         margin: 0 auto;
         display: inline-block;
-        margin: 0 auto;
     }
+
+        .highlight-button:hover {
+            background-color: #de3d2f;
+            color: white;
+            text-decoration-line: none;
+        }
 
     /*layout*/
     #main-wrap {
@@ -56,7 +69,7 @@
         .highlight-wrapper:before, .highlight-wrapper:after {
             content: '';
             width: 100%;
-            height: 250px;
+            height: 200px;
             position: absolute;
             bottom: 0;
             background: rgba(0, 0, 0, 0.3);
@@ -70,125 +83,351 @@
             right: 0;
         }
 
-    #image {
-        min-height: 240px;
-        min-width: 200px;
+
+    #aside-right {
+        width: auto;
+        display: table-cell;
+    }
+
+    #aside-left {
+        width: 30%;
+        display: table-cell;
+        vertical-align: top;
+        padding: 0 15px 0 0;
+    }
+
+    .widget-title {
+        border-bottom: 2px solid #289dcc;
+        font-size: 18px;
+        margin-bottom: 15px;
+        padding-bottom: 0;
+    }
+
+        .widget-title span {
+            background-color: #289dcc;
+            color: #fff;
+            padding: 6px 12px;
+            display: inline-block;
+        }
+
+    .container1 {
+        width: 800px;
+        overflow-x: scroll;
+        white-space: nowrap;
+    }
+
+    .column {
+        display: inline-block;
+        width: 200px;
+    }
+
+    .single-article {
+        background-color: #f7f7f7;
+        box-shadow: 0.3px 0.3px #888888;
+        border-style: ridge;
+        border-color: rgba(233, 233, 233, 0.47);
+        margin: 5px;
+        width: 48%;
+        display: inline-block;
+    }
+
+    .article-content {
+        padding: 5px;
+    }
+
+    .entry-title {
+        font-size: 14px;
+    }
+
+    .article_container {
+        margin: 5px 0 0 0;
+        max-height: 1070px;
+        overflow-y: auto;
+    }
+
+    .cat-links {
+        background-color: #289dcc;
+        border-radius: 3px;
+        color: #ffffff;
+        font-size: 12px;
+        padding: 3px 10px;
+        overflow: hidden;
+    }
+
+        .cat-links a {
+            color: white;
+            overflow: hidden;
+        }
+
+            .cat-links a:hover {
+                color: white;
+                text-decoration-line: none;
+            }
+
+    .entry-title {
+        font-size: 22px;
+        -webkit-text-size-adjust: auto;
+        width: 80%;
+        overflow: hidden;
+        height: 55px;
+    }
+
+        .entry-title a {
+            color: #232323;
+            text-shadow: none;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+            .entry-title a:hover {
+                color: #289dcc;
+                text-decoration-line: none;
+            }
+
+    .entry-content a:hover {
+        color: #289dcc;
+        text-decoration-line: none;
+    }
+
+    .featured-image img {
+        width: 100%;
+    }
+
+    #barChart {
+        font-size: 10px;
+    }
+
+    .bar {
+        fill: steelblue;
+    }
+
+        .bar:hover {
+            fill: #3ab3e3;
+        }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+    }
+
+    .x.axis path {
+        display: none;
+    }
+
+    .top_margin {
+        margin-top: 70px;
     }
 </style>
 
+<head>
+    <meta name="viewport" content="width=device-width">
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
 
-@* BELONGS TO RAZ - DO NOT REMOVE! ~thanx <3
-    <style>
-        /* divide multiple-columns with xxlarge font size*/
-        #song_details_container {
-            column-count: 2;
-        }
+<div>
+    <aside id="aside-left">
+        <h3 class="widget-title">
+            <span>Search</span>
+        </h3>
 
-        /*#youtube_container_div {
-            float: left;
-            margin: 20px;
-        }
+        <div class="input-group pull-left" style="width:100%;">
+            <input id="search_text" type="text" class="form-control search-query" placeholder="Search songs and artists" />
+            <span class="input-group-btn">
+                <button class="btn btn-primary" disabled><i class="glyphicon glyphicon-search"></i></button>
+            </span>
+        </div>
 
-        #frame {
-            display: none;
-        }
+        <div class="top_margin">
+            <h3 class="widget-title">
+                <span>Statistics</span>
+            </h3>
+            <span>Genres x Songs Count</span>
+            @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
+            <svg id="barChart"></svg>
+        </div>
+    </aside>
+    <aside id="aside-right">
+        <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+            @*checking if there are highlights*@
+            @{if (Model != null)
+                {
+                    var count1 = Model.Highlights.Count >= 5 ? 5 : Model.Highlights.Count;
+                    <div>
+                        <ol class="carousel-indicators">
+                            @*looping on all highlights and add bolets for each item for the home page songs-display control
+                                set the first item to be the active one (the first focused item)*@
+                            @for (int i = 0; i < count1; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                                }
+                                else
+                                {
+                                    <li data-target="#myCarousel" data-slide-to="@i"></li>
+                                }
+                            }
+                        </ol>
+                        <div class="carousel-inner" role="listbox">
+                            @{
+                                //looping on all highligts and add their data in a listbox
+                                //set the first item to be the active one (the first focused item)
+                                for (int i = 0; i < count1; i++)
+                                {
+                                    var highlight = Model.Highlights[i];
+                                    string cla = i == 0 ? "item active" : "item";
 
-        #youtube_img {
-            float: left;
-            width: 120px;
-            height: 90px;
-            cursor: pointer;
-        }*/
-    </style>
+                                    <div id="main-wrap" class="@cla">
+                                        <img id="image" src="http://img.youtube.com/vi/@highlight.YoutubeId/maxresdefault.jpg" class="img-responsive" />
 
-    @*<head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script>
-            var youtube_url = @Html.Raw(JsonConvert.SerializeObject(Model.YouTubeUrl));
+                                        <div class="highlight-wrapper">
+                                            <div class="carousel-caption" role="option">
+                                                <h1 class="highlight-title">
+                                                    <br>@highlight.SongName
+                                                </h1>
 
-            $('#frame').ready(function ()
-            {
-                var iframe = document.getElementById('frame')
-                var youtube_video_id = youtube_url.match(/youtube\.com.*(\?v=|\/embed\/)(.{11})/).pop();
+                                                <span class="highlight-body">
+                                                    <b>by</b>
+                                                    <a asp-controller="Artist" asp-action="Details" asp-route-id="@highlight.ArtistID">@highlight.ArtistName</a>
+                                                    <br />
+                                                    <br />
+                                                </span>
 
-                if (youtube_video_id.length >=5)
-               {
-                    var video_thumbnail = $('<img id="youtube_img" src="http://img.youtube.com/vi/' + youtube_video_id + '/maxresdefault.jpg">');
-                    $('#youtube_container_div').append(video_thumbnail);
+                                                <a class="highlight-button" asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID">@highlight.ButtonContent</a>
 
-                    $('#youtube_img').click(function () {
-                        iframe.fadeToggle('400');
-                    });
-                }
-            });
-        </script>
-    </head>*@
-
-
-<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-    @*checking if there are highlights*@
-    @{if (Model != null)
-        {
-            <div>
-                <ol class="carousel-indicators">
-                    @*looping on all highlights and add bolets for each item for the home page songs-display control
-                        set the first item to be the active one (the first focused item)*@
-                    @for (int i = 0; i < Model.Count; i++)
-                    {
-                        if (i == 0)
-                        {
-                            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                        }
-                        else
-                        {
-                            <li data-target="#myCarousel" data-slide-to="@i"></li>
-                        }
-                    }
-                </ol>
-                <div class="carousel-inner" role="listbox">
-                    @{
-                        //looping on all highligts and add their data in a listbox
-                        //set the first item to be the active one (the first focused item)
-                        for (int i = 0; i < Model.Count; i++)
-                        {
-                            var highlight = Model[i];
-                            string cla = i == 0 ? "item active" : "item";
-
-                            <div id="main-wrap" class="@cla">
-                                <img id="image" src="http://img.youtube.com/vi/@highlight.YoutubeId/maxresdefault.jpg" class="img-responsive" />
-
-                                <div class="highlight-wrapper">
-                                    <div class="carousel-caption" role="option">
-                                        <h1 class="highlight-title">
-                                            <br>@highlight.Title
-                                        </h1>
-
-                                        <div class="highlight-body">
-                                            <p>@highlight.Body</p>
+                                                @*empty space*@
+                                                <br />
+                                                <br />
+                                            </div>
                                         </div>
-
-                                        <a class="highlight-button" href="https://www.youtube.com/watch?v=@highlight.YoutubeId">
-                                            @highlight.ButtonContent
-                                        </a>
-
-                                        @*empty space*@
-                                        <br />
-                                        <br />
                                     </div>
-                                </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                }
+            }
+        </div>
+        <div class="article_container">
+            @{var count = Model.Highlights.Count >= 5 ? 5 : Model.Highlights.Count;
+
+                for (int i = count; i < Model.Highlights.Count; i++)
+                {
+                    var highlight = Model.Highlights[i];
+
+                    <article class="single-article">
+                        <div>
+                            <a class="featured-image" asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID"><img src="http://img.youtube.com/vi/@highlight.YoutubeId/mqdefault.jpg" alt="" scale="0"></a>
+                        </div>
+
+                        <div class="article-content clearfix">
+                            <div class="above-entry-meta">
+                                <span class="cat-links">
+                                    <a>@highlight.Genre</a>
+                                </span>
                             </div>
-                        }
-                    }
-                </div>
-            </div>
-            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        }
-    }
+                            <header>
+                                <h2 class="entry-title">
+                                    <a asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID">@highlight.SongName</a>
+                                </h2>
+                            </header>
+
+                            <span class="entry-content">
+                                <b>by</b>
+                                <a asp-controller="Artist" asp-action="Details" asp-route-id="@highlight.ArtistID">@highlight.ArtistName</a>
+                            </span>
+                        </div>
+                    </article>
+                }
+            }
+        </div>
+    </aside>
 </div>
+
+@*Genre Data Script*@
+<script>
+  var genre_data = @Html.Raw(JsonConvert.SerializeObject(Model.GenreData));
+
+  var margin = {
+      top: 20,
+      right: 20,
+      bottom: 50,
+      left: 40
+    },
+    width = 300 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+
+  var x = d3.scale.ordinal()
+    .rangeRoundBands([width, 0], 0.1);
+
+  var y = d3.scale.linear()
+    .range([0, height]);
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+ var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format("d"))
+    .tickSubdivide(0);
+
+
+  var svg = d3.select("svg#barChart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom+20)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    x.domain(genre_data.map(function(d) { return d.Title; }));
+
+    y.domain([d3.max(genre_data, function(d) {
+    return d.Count;
+  }), 0]);
+
+  //g : Title attributes.
+  svg.append("g")
+    .attr("class", "y axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+    .selectAll("text")
+    .attr("transform", "rotate(90)")
+    .attr("x", 5)
+    .attr("y", -4)
+    .attr("dx", ".6em")
+    .style("text-anchor", "start");
+
+  svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
+
+  svg.selectAll(".bar")
+      .data(genre_data)
+    .enter().append("rect")
+    .attr("class", "bar")
+
+    .attr("x", function(d) {
+      return x(d.Title);
+    })
+    .attr("width", x.rangeBand())
+    .attr("y", function(d) {
+      return y(d.Count);
+    })
+    .attr("height", function(d) {
+      return height - y(d.Count);
+    });
+
+</script>
+
+

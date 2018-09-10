@@ -4,6 +4,12 @@
     ViewData["Title"] = "Details";
 }
 
+<style>
+    a:hover {
+        text-decoration-line: none;
+    }
+</style>
+
 <div>
     <h1>@Html.DisplayFor(model => model.FullName)</h1>
     <div>
@@ -13,7 +19,7 @@
     <table class="table">
         <tr>
             <th>Song Title</th>
-            <th>Ganere</th>
+            <th>Genre</th>
         </tr>
         <!-- iterate for each song of the artist -->
         @foreach (var song in Model.Songs)

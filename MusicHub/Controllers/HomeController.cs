@@ -6,14 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using MusicHub.Classes.Home;
 using MusicHub.Data;
 using MusicHub.Models;
+using MusicHub.Models.HomeViewModels;
 
 namespace MusicHub.Controllers
 {
     public class HomeController : Controller
     {
-        //[TempData]
-        //List<Highlight> highlights { get; set; }
-
         private readonly ApplicationDbContext _context;
 
         public HomeController(ApplicationDbContext context)
@@ -27,6 +25,8 @@ namespace MusicHub.Controllers
             var songs = _context.Songs.ToList();
             var artists = _context.Artists.ToList();
 
+            #region Highlights
+
             //Join both collection by artist id and take data.
             var query = (from song in songs
                          join artist in artists
@@ -34,9 +34,12 @@ namespace MusicHub.Controllers
                          where !string.IsNullOrEmpty(song.YouTubeUrl) && song.ArtistId != null
                          select new
                          {
-                             song.Name,
+                             song_id = song.ID,
+                             song_name = song.Name,
+                             song.Genre,
                              song.YouTubeID,
-                             artist.FullName
+                             artist_id = artist.ID,
+                             artis_name = artist.FullName
                          }).ToList();
 
             //creating highlights - takes the most 5 recent songs.
@@ -45,17 +48,66 @@ namespace MusicHub.Controllers
             {
                 //If there are at least 5 songs - count 5 songs, 
                 //unlse - count until the start of the list.
-                var count = query.Count >= 5 ? query.Count - 6 : 0;
+                //var count = query.Count >= 5 ? query.Count - 6 : 0;
                 //Looping from the end of the list 5 times or untill the head of the list.
                 //Depending on the 'count' parameter.
-                for (int i = query.Count - 1; i > count; i--)
+                for (int i = query.Count - 1; i > 0; i--)
                 {
                     var highlight = query[i];
-                    highlights.Add(new Highlight(highlight.Name, "By " + highlight.FullName, highlight.YouTubeID, "Listen to " + highlight.Name + " On YouTube"));
+                    highlights.Add(new Highlight(
+                        highlight.Genre.ToString(),
+                        string.Empty,
+                        highlight.YouTubeID,
+                        "Go To " + highlight.song_name + " Page",
+                        highlight.song_id,
+                        highlight.artist_id,
+                        highlight.artis_name,
+                        highlight.song_name));
                 }
             }
 
-            return View(highlights);
+            #endregion
+
+            #region Genre Graph Data
+
+            //Group songs count by genre.
+            var genresGB = from song in songs
+                           group song by song.Genre into genre
+                           select new { genre = genre.Key.ToString(), songs_count = genre.ToList().Count };
+
+            //Creating genre graph data collection.
+            var genres = new List<GraphData>();
+            //Getting a collection of all the available genres in order
+            //to complete the missing genres in the end of the graph data collection creation.
+            var allGenres = Enum.GetNames(typeof(MusicGenre)).ToList();
+
+            //Adding the data to the graph data collection.
+            foreach (var item in genresGB)
+            {
+                //Removing the exists genre from the 'all genres' collection.
+                if(allGenres.Contains(item.genre))
+                    allGenres.Remove(item.genre);
+
+                var data = new GraphData() { Title = item.genre, Count = item.songs_count };
+                genres.Add(data);
+            }
+
+            //Adding the missing (none exist) genres.
+            foreach (var genre in allGenres)
+            {
+                var data = new GraphData() { Title = genre, Count = 0 };
+                genres.Add(data);
+            }
+
+            #endregion
+
+            var model = new IndexViewModel()
+            {
+                Highlights = highlights,
+                GenreData = genres
+            };
+
+            return View(model);
         }
 
         public IActionResult About()
