@@ -1,6 +1,6 @@
-﻿@model MainViewModel
+﻿@model List<Highlight>
 
-@using MusicHub.Models.HomeViewModels
+@using MusicHub.Classes.Home
 
 @{
     ViewData["Title"] = "Home Page";
@@ -8,19 +8,27 @@
 
 <style>
     .highlight-title {
-        font-size: 20px;
+        font-size: 25px;
         color: darkcyan;
         line-height: 1;
         text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
         text-align: center;
     }
 
-    .highlight-body {
-        font-size: 15px;
+    .highlight-body b {
+        font-size: 14px;
         color: white;
-        line-height: 1;
-        text-align: center;
     }
+
+    .highlight-body a {
+        font-size: 14px;
+        color: #289dcc;
+    }
+
+        .highlight-body a:hover {
+            color: #48b9e7;
+            text-decoration-line: none;
+        }
 
     .highlight-button {
         background-color: #d51000;
@@ -29,13 +37,21 @@
         padding: 15px 32px;
         text-align: center;
         text-decoration: none;
-        font-size: 12px;
+        font-size: 14px;
         margin: 4px 2px;
         cursor: pointer;
         vertical-align: bottom;
+        border-radius: 2px;
         margin: 0 auto;
         display: inline-block;
     }
+
+        .highlight-button:hover {
+            background-color: #de3d2f;
+            color: white;
+            text-decoration-line: none;
+        }
+
 
     /*layout*/
     #main-wrap {
@@ -75,36 +91,142 @@
         float: right;
         height: 100%;
         /*padding-left: .5rem;
-            margin-left: .5rem;
-            box-shadow: inset 5px 0 5px -5px #29627e;
-            font-style: italic;
-            color: #29627e;*/
+                margin-left: .5rem;
+                box-shadow: inset 5px 0 5px -5px #29627e;
+                font-style: italic;
+                color: #29627e;*/
     }
 
     .aside-left {
         width: 30%;
         float: left;
-        height:500px;
-        background-color:aquamarine;
-            box-shadow: inset 0px 5px -5px 5px #29627e;
+        height: 500px;
+        /*background-color: aquamarine;*/
+        box-shadow: inset 0px 5px -5px 5px #29627e;
         /*padding-left: .5rem;
-            margin-left: .5rem;
-            font-style: italic;
-            color: #29627e;*/
+                margin-left: .5rem;
+                font-style: italic;
+                color: #29627e;*/
+    }
+
+    .widget-title {
+        border-bottom: 2px solid #289dcc;
+        font-size: 18px;
+        margin-bottom: 15px;
+        padding-bottom: 0;
+    }
+
+        .widget-title span {
+            background-color: #289dcc;
+            color: #fff;
+            padding: 6px 12px;
+            display: inline-block;
+        }
+
+    .container1 {
+        width: 800px;
+        overflow-x: scroll;
+        white-space: nowrap;
+    }
+
+    .column {
+        display: inline-block;
+        width: 200px;
+    }
+
+    .single-article {
+        background-color: #ffffff;
+        box-shadow: 0.3px 0.3px #888888;
+        border-style: ridge;
+        border-color: rgba(233, 233, 233, 0.47);
+        margin: 5px;
+        display: inline-block;
+    }
+
+    .article-content {
+        padding: 5px;
+    }
+
+    .entry-title {
+        font-size: 14px;
+    }
+
+    .article_container {
+        margin: 5px;
+        max-height: 980px;
+        overflow-y: scroll;
+    }
+
+    .cat-links {
+        background-color: #289dcc;
+        border-radius: 3px;
+        color: #ffffff;
+        font-size: 12px;
+        padding: 3px 10px;
+    }
+
+        .cat-links a {
+            color: white;
+        }
+
+            .cat-links a:hover {
+                color: white;
+                text-decoration-line: none;
+            }
+
+    .entry-title {
+        font-size: 22px;
+        width: 300px;
+        height: 55px;
+    }
+
+        .entry-title a {
+            color: #232323;
+            text-shadow: none;
+            word-wrap: break-word;
+        }
+
+            .entry-title a:hover {
+                color: #289dcc;
+                text-decoration-line: none;
+            }
+
+    .entry-content a:hover {
+        color: #289dcc;
+        text-decoration-line: none;
+    }
+
+    .featured-image {
+        /*margin: 0px,0px,0px,0px;*/
     }
 </style>
 
 <div>
     <aside class="aside-left">
 
+        <h3 class="widget-title">
+            <span>Search</span>
+        </h3>
+
+        <div class="input-group pull-right">
+            <input id="search_text" type="text" class="form-control search-query" placeholder="Search songs and artists" />
+            <span class="input-group-btn">
+                <button class="btn btn-primary" disabled><i class="glyphicon glyphicon-search"></i></button>
+            </span>
+        </div>
+
     </aside>
     <aside class="aside-right">
         <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-            @{if (Model.Highlights != null)
+            @*checking if there are highlights*@
+            @{if (Model != null)
                 {
+                    var count1 = Model.Count >= 5 ? 5 : Model.Count;
                     <div>
                         <ol class="carousel-indicators">
-                            @for (int i = 0; i < Model.Highlights.Count; i++)
+                            @*looping on all highlights and add bolets for each item for the home page songs-display control
+                                set the first item to be the active one (the first focused item)*@
+                            @for (int i = 0; i < count1; i++)
                             {
                                 if (i == 0)
                                 {
@@ -118,27 +240,34 @@
                         </ol>
                         <div class="carousel-inner" role="listbox">
                             @{
-                                for (int i = 0; i < Model.Highlights.Count; i++)
+                                //looping on all highligts and add their data in a listbox
+                                //set the first item to be the active one (the first focused item)
+                                for (int i = 0; i < count1; i++)
                                 {
-                                    var highlight = Model.Highlights[i];
+                                    var highlight = Model[i];
                                     string cla = i == 0 ? "item active" : "item";
 
                                     <div id="main-wrap" class="@cla">
-                                        <img src="@Url.Content(highlight.ImagePath)" alt="Visual Studio" class="img-responsive" />
+                                        <img id="image" src="http://img.youtube.com/vi/@highlight.YoutubeId/maxresdefault.jpg" class="img-responsive" />
 
                                         <div class="highlight-wrapper">
                                             <div class="carousel-caption" role="option">
                                                 <h1 class="highlight-title">
-                                                    <br>@highlight.Title
+                                                    <br>@highlight.SongName
                                                 </h1>
 
-                                                <div class="highlight-body">
-                                                    <br>@highlight.Body
-                                                </div>
+                                                <span class="highlight-body">
+                                                    <b>by</b>
+                                                    <a asp-controller="Artist" asp-action="Details" asp-route-id="@highlight.ArtistID">@highlight.ArtistName</a>
+                                                    <br />
+                                                    <br />
+                                                </span>
 
-                                                <a class="highlight-button" href="@highlight.HyperLink">
-                                                    @highlight.ButtonContent
-                                                </a>
+                                                <a class="highlight-button" asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID">@highlight.ButtonContent</a>
+
+                                                @*empty space*@
+                                                <br />
+                                                <br />
                                             </div>
                                         </div>
                                     </div>
@@ -154,6 +283,39 @@
                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                         <span class="sr-only">Next</span>
                     </a>
+                }
+            }
+        </div>
+        <div class="article_container">
+            @{var count = Model.Count >= 5 ? 5 : Model.Count;
+
+                for (int i = count; i < Model.Count; i++)
+                {
+                    var highlight = Model[i];
+
+                    <article class="single-article">
+                        <div class="featured-image">
+                            <a asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID"><img src="http://img.youtube.com/vi/@highlight.YoutubeId/mqdefault.jpg" alt="" scale="0"></a>
+                        </div>
+
+                        <div class="article-content clearfix">
+                            <div class="above-entry-meta">
+                                <span class="cat-links">
+                                    <a>@highlight.Genre</a>
+                                </span>
+                            </div>
+                            <header>
+                                <h2 class="entry-title">
+                                    <a asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID">@highlight.SongName</a>
+                                </h2>
+                            </header>
+
+                            <span class="entry-content">
+                                <b>by</b>
+                                <a asp-controller="Artist" asp-action="Details" asp-route-id="@highlight.ArtistID">@highlight.ArtistName</a>
+                            </span>
+                        </div>
+                    </article>
                 }
             }
         </div>

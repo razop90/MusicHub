@@ -1,10 +1,7 @@
 ﻿using MusicHub.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace MusicHub.Models.LocalModels
 {
@@ -18,6 +15,12 @@ namespace MusicHub.Models.LocalModels
         public int ID { get; set; }
 
         #region Properties
+
+        /// <summary>
+        /// Regex expression for extracting youtube id from a youtube url.
+        /// Same for all youtube urls - thats why it's a static property.
+        /// </summary>
+        public static readonly Regex YoutubeVideoRegex = new Regex(@"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)([a-zA-Z0-9-_]+)");
 
         /// <summary>
         /// Song name.
@@ -56,6 +59,19 @@ namespace MusicHub.Models.LocalModels
         [DisplayFormat(NullDisplayText = "There is no YouTube link to this song")]
         public string YouTubeUrl { get; set; }
 
+        /// <summary>
+        /// Extracting youtube id when someone wants to get that value.
+        /// </summary>
+        public string YouTubeID
+        {
+            get
+            {
+                Match youtubeMatch = YoutubeVideoRegex.Match(YouTubeUrl);
+                var youtubeId = youtubeMatch.Groups[1].Value;
+                return youtubeId;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -64,7 +80,7 @@ namespace MusicHub.Models.LocalModels
         public SongModel()
         {
             //Should check if it's the default behavior.
-           // ArtistId = null;
+            // ArtistId = null;
         }
     }
 }

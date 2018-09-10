@@ -17,6 +17,9 @@ namespace MusicHub.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+        [TempData]
+        public string LastDirection { get; set; } //Descending or Ascending
+
         public ArtistController(ApplicationDbContext context)
         {
             _context = context;
@@ -26,38 +29,98 @@ namespace MusicHub.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            // Initiate model view data
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["LastNameSortParm"] = sortOrder == "LastName" ? "last_name_desc" : "LastName";
-            ViewData["CurrentFilter"] = searchString;
+            //set default value of sort direction.
+            LastDirection = "Descending";
+            //get sorted artist collection from db.
+            var artists = GetSortedArtists("name");
+
+            return View(artists);
+        }
+
+        [HttpGet]
+        public ActionResult Sort(string sortBy, string searchString)
+        {
+            //getting sorted artists, if there is a search 
+            //string - returns filtered list by that string.
+            var artists = GetSortedArtists(sortBy, searchString);
+            //return the new collection to the partial view.
+            return PartialView("_Partial_Artists_Table", artists);
+        }
+
+        [HttpGet]
+        public ActionResult UndoSearch()
+        {
+            //gets the full collection from db with a sorting operation.
+            var artists = GetSortedArtists("name", string.Empty, "Ascending");
+
+            return PartialView("_Partial_Artists_Table", artists);
+        }
+
+        [HttpGet]
+        public ActionResult Search(string searchString)
+        {
+            //gets artists collection from db with a filtering operation.
+            var artists = GetSearchedArtists(searchString);
+
+            return PartialView("_Partial_Artists_Table", artists);
+        }
+
+        private List<ArtistModel> GetSearchedArtists(string searchString)
+        {
             // Get all artists from DB
-            var artists = from a in _context.Artists
-                          select a;
+            var artists = _context.Artists.ToList();
+
             // Check if we got search string
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
-                // search artists by first or last name or full name
-                artists = artists.Where(s => s.Name.Contains(searchString)
-                                       || s.LastName.Contains(searchString)
-                                       || s.FullName.Contains(searchString));
+                var lower = searchString.ToLower();
+
+                // search artists by name
+                artists = artists.Where(s =>
+                       s.Name.ToLower().Contains(lower)
+                    || s.LastName.ToLower().Contains(lower)).ToList();
             }
-            // sort the results
-            switch (sortOrder)
+
+            return artists;
+        }
+
+        private List<ArtistModel> GetSortedArtists(string sortBy, string searchString = "", string direction = null)
+        {
+            //get artists collection from db by a filter word.
+            var artists = GetSearchedArtists(searchString);
+            //switching the order of the sorting direction.
+            if (string.IsNullOrEmpty(direction))
+                LastDirection = LastDirection == "Ascending" ? "Descending" : "Ascending";
+            else
+                LastDirection = direction;
+
+            switch (LastDirection)
             {
-                case "name_desc":
-                    artists = artists.OrderByDescending(a => a.Name);
+                case "Ascending":
+                    switch (sortBy)
+                    {
+                        case "name":
+                            artists = artists.OrderBy(a => a.Name).ToList();
+                            break;
+                        case "last_name":
+                            artists = artists.OrderBy(a => a.LastName).ToList();
+                            break;
+                    }
                     break;
-                case "LastName":
-                    artists = artists.OrderBy(a => a.LastName);
-                    break;
-                case "last_name_desc":
-                    artists = artists.OrderByDescending(a => a.LastName);
-                    break;
-                default:
-                    artists = artists.OrderBy(a => a.Name);
+                case "Descending":
+                    switch (sortBy)
+                    {
+                        case "name":
+                            artists = artists.OrderByDescending(a => a.Name).ToList();
+                            break;
+                        case "last_name":
+                            artists = artists.OrderByDescending(a => a.LastName).ToList();
+                            break;
+                    }
                     break;
             }
-            return View(await artists.AsNoTracking().ToListAsync());
+
+            return artists;
         }
 
         // GET: Artist/Details/5
@@ -133,14 +196,14 @@ namespace MusicHub.Controllers
             PopulateAssignedSongsData(artistModel);
             // send the model to the view
             return View(artistModel);
-        }        
+        }
 
         // POST: Artist/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id,  string[] selectedSongs)
+        public async Task<IActionResult> Edit(int? id, string[] selectedSongs)
         {
             if (id == null)
             {
@@ -152,7 +215,7 @@ namespace MusicHub.Controllers
             .SingleOrDefaultAsync(m => m.ID == id);
             // Check if update operation is possible to current artist
             if (await TryUpdateModelAsync<ArtistModel>(
-                artistToUpdate,"",
+                artistToUpdate, "",
                 i => i.Name, i => i.LastName, i => i.Songs))
             {
                 UpdateArtistSongs(selectedSongs, artistToUpdate);
@@ -173,7 +236,7 @@ namespace MusicHub.Controllers
             UpdateArtistSongs(selectedSongs, artistToUpdate);
             PopulateAssignedSongsData(artistToUpdate);
             return View(artistToUpdate);
-        }      
+        }
 
         // GET: Artist/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -200,9 +263,9 @@ namespace MusicHub.Controllers
         {
             var artistModel = await _context.Artists.Include(artist => artist.Songs).SingleOrDefaultAsync(m => m.ID == id);
             // Update artist songs to unassign current artist
-            UpdateArtistSongs(new String[0], artistModel);   
+            UpdateArtistSongs(new String[0], artistModel);
             // Remove the artist from the DB
-            _context.Artists.Remove(artistModel);            
+            _context.Artists.Remove(artistModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

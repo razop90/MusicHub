@@ -2,63 +2,68 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MusicHub.Classes.Home;
 using MusicHub.Data;
 using MusicHub.Models;
-using MusicHub.Models.HomeViewModels;
 
 namespace MusicHub.Controllers
 {
     public class HomeController : Controller
     {
-        [TempData]
-        List<Highlight> highlights { get; set; }
-
         private readonly ApplicationDbContext _context;
 
         public HomeController(ApplicationDbContext context)
         {
             _context = context;
-
-            //add highlights.
-            #region Highlights
-            highlights = highlights = new List<Highlight>()
-            {
-                new Highlight("Flow X Granrodeo - Howling",
-                "Howling is the 1st opening theme song of Season 2 of The Seven Deadly Sins anime series",
-                @"https://www.youtube.com/watch?v=kAg5PKPSQ3c",
-                @"~/images/Highlights/highlight1.jpg",
-                "Howling on YouTube"),
-
-                new Highlight("Ariana Grande – ​God Is A Woman",
-                "God Is a Woman (stylized in sentence case) is a song by American singer Ariana Grande",
-                @"https://www.youtube.com/watch?v=kHLHSlExFis",
-                @"~/images/Highlights/highlight2.jpg",
-                "​God Is A Woman on YouTube"),
-
-                 new Highlight("Charlie Puth - How Long",
-                "How Long is a song recorded and produced by American singer Charlie Puth",
-                @"https://www.youtube.com/watch?v=CwfoyVa980U",
-                @"~/images/Highlights/highlight3.jpg",
-                "How Long on YouTube"),
-
-                new Highlight("Daddy Yankee - Limbo",
-                "Limbo is a song by Puerto Rican reggaeton recording artist Daddy Yankee from his sixth studio album Prestige (2012)",
-                @"https://www.youtube.com/watch?v=6BTjG-dhf5s",
-                @"~/images/Highlights/highlight4.png",
-                "Limbo on YouTube")
-             };
-            #endregion
         }
 
         public IActionResult Index()
         {
-            var model = new MainViewModel()
-            { Highlights = highlights };
+            //Getting songs and artist collections from db.
+            var songs = _context.Songs.ToList();
+            var artists = _context.Artists.ToList();
 
-            return View(model);
+            //Join both collection by artist id and take data.
+            var query = (from song in songs
+                         join artist in artists
+                         on song.ArtistId equals artist.ID
+                         where !string.IsNullOrEmpty(song.YouTubeUrl) && song.ArtistId != null
+                         select new
+                         {
+                             song_id = song.ID,
+                             song_name = song.Name,
+                             song.Genre,
+                             song.YouTubeID,
+                             artist_id = artist.ID,
+                             artis_name = artist.FullName
+                         }).ToList();
+
+            //creating highlights - takes the most 5 recent songs.
+            var highlights = new List<Highlight>();
+            if (query.Count > 0)
+            {
+                //If there are at least 5 songs - count 5 songs, 
+                //unlse - count until the start of the list.
+                //var count = query.Count >= 5 ? query.Count - 6 : 0;
+                //Looping from the end of the list 5 times or untill the head of the list.
+                //Depending on the 'count' parameter.
+                for (int i = query.Count - 1; i > 0; i--)
+                {
+                    var highlight = query[i];
+                    highlights.Add(new Highlight(
+                        highlight.Genre.ToString(),
+                        string.Empty,
+                        highlight.YouTubeID,
+                        "Go To " + highlight.song_name + " Page",
+                        highlight.song_id,
+                        highlight.artist_id,
+                        highlight.artis_name,
+                        highlight.song_name));
+                }
+            }
+
+            return View(highlights);
         }
 
         public IActionResult About()
@@ -68,12 +73,9 @@ namespace MusicHub.Controllers
 
         public IActionResult Contact()
         {
-            var model = new LocationsViewModel()
-            {
-                Locations = _context.Locations.ToList()
-            };
+            var locations = _context.Locations.ToList();
 
-            return View(model);
+            return View(locations);
         }
 
         public IActionResult Error()
