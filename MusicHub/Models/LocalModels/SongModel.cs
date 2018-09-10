@@ -66,6 +66,9 @@ namespace MusicHub.Models.LocalModels
         {
             get
             {
+                if (YouTubeUrl==null)
+                    return string.Empty;
+
                 Match youtubeMatch = YoutubeVideoRegex.Match(YouTubeUrl);
                 var youtubeId = youtubeMatch.Groups[1].Value;
                 return youtubeId;

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MusicHub.Classes.Home;
 using MusicHub.Data;
 using MusicHub.Models;
+using MusicHub.Models.HomeViewModels;
 
 namespace MusicHub.Controllers
 {
@@ -23,6 +24,8 @@ namespace MusicHub.Controllers
             //Getting songs and artist collections from db.
             var songs = _context.Songs.ToList();
             var artists = _context.Artists.ToList();
+
+            #region Highlights
 
             //Join both collection by artist id and take data.
             var query = (from song in songs
@@ -63,7 +66,48 @@ namespace MusicHub.Controllers
                 }
             }
 
-            return View(highlights);
+            #endregion
+
+            #region Genre Graph Data
+
+            //Group songs count by genre.
+            var genresGB = from song in songs
+                           group song by song.Genre into genre
+                           select new { genre = genre.Key.ToString(), songs_count = genre.ToList().Count };
+
+            //Creating genre graph data collection.
+            var genres = new List<GraphData>();
+            //Getting a collection of all the available genres in order
+            //to complete the missing genres in the end of the graph data collection creation.
+            var allGenres = Enum.GetNames(typeof(MusicGenre)).ToList();
+
+            //Adding the data to the graph data collection.
+            foreach (var item in genresGB)
+            {
+                //Removing the exists genre from the 'all genres' collection.
+                if(allGenres.Contains(item.genre))
+                    allGenres.Remove(item.genre);
+
+                var data = new GraphData() { Title = item.genre, Count = item.songs_count };
+                genres.Add(data);
+            }
+
+            //Adding the missing (none exist) genres.
+            foreach (var genre in allGenres)
+            {
+                var data = new GraphData() { Title = genre, Count = 0 };
+                genres.Add(data);
+            }
+
+            #endregion
+
+            var model = new IndexViewModel()
+            {
+                Highlights = highlights,
+                GenreData = genres
+            };
+
+            return View(model);
         }
 
         public IActionResult About()

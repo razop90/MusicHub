@@ -1,7 +1,6 @@
-﻿@model List<Highlight>
+﻿@model MusicHub.Models.HomeViewModels.IndexViewModel
 
-@using MusicHub.Classes.Home
-
+@using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -52,7 +51,6 @@
             text-decoration-line: none;
         }
 
-
     /*layout*/
     #main-wrap {
         overflow: hidden;
@@ -86,27 +84,16 @@
         }
 
 
-    .aside-right {
-        width: 68%;
-        float: right;
-        height: 100%;
-        /*padding-left: .5rem;
-                margin-left: .5rem;
-                box-shadow: inset 5px 0 5px -5px #29627e;
-                font-style: italic;
-                color: #29627e;*/
+    #aside-right {
+        width: auto;
+        display: table-cell;
     }
 
-    .aside-left {
+    #aside-left {
         width: 30%;
-        float: left;
-        height: 500px;
-        /*background-color: aquamarine;*/
-        box-shadow: inset 0px 5px -5px 5px #29627e;
-        /*padding-left: .5rem;
-                margin-left: .5rem;
-                font-style: italic;
-                color: #29627e;*/
+        display: table-cell;
+        vertical-align: top;
+        padding: 0 15px 0 0;
     }
 
     .widget-title {
@@ -135,11 +122,12 @@
     }
 
     .single-article {
-        background-color: #ffffff;
+        background-color: #f7f7f7;
         box-shadow: 0.3px 0.3px #888888;
         border-style: ridge;
         border-color: rgba(233, 233, 233, 0.47);
         margin: 5px;
+        width: 48%;
         display: inline-block;
     }
 
@@ -152,9 +140,9 @@
     }
 
     .article_container {
-        margin: 5px;
-        max-height: 980px;
-        overflow-y: scroll;
+        margin: 5px 0 0 0;
+        max-height: 1070px;
+        overflow-y: auto;
     }
 
     .cat-links {
@@ -163,10 +151,12 @@
         color: #ffffff;
         font-size: 12px;
         padding: 3px 10px;
+        overflow: hidden;
     }
 
         .cat-links a {
             color: white;
+            overflow: hidden;
         }
 
             .cat-links a:hover {
@@ -176,7 +166,9 @@
 
     .entry-title {
         font-size: 22px;
-        width: 300px;
+        -webkit-text-size-adjust: auto;
+        width: 80%;
+        overflow: hidden;
         height: 55px;
     }
 
@@ -184,6 +176,7 @@
             color: #232323;
             text-shadow: none;
             word-wrap: break-word;
+            overflow: hidden;
         }
 
             .entry-title a:hover {
@@ -196,32 +189,70 @@
         text-decoration-line: none;
     }
 
-    .featured-image {
-        /*margin: 0px,0px,0px,0px;*/
+    .featured-image img {
+        width: 100%;
+    }
+
+    #barChart {
+        font-size: 10px;
+    }
+
+    .bar {
+        fill: steelblue;
+    }
+
+        .bar:hover {
+            fill: #3ab3e3;
+        }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+    }
+
+    .x.axis path {
+        display: none;
+    }
+
+    .top_margin {
+        margin-top: 70px;
     }
 </style>
 
-<div>
-    <aside class="aside-left">
+<head>
+    <meta name="viewport" content="width=device-width">
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
 
+<div>
+    <aside id="aside-left">
         <h3 class="widget-title">
             <span>Search</span>
         </h3>
 
-        <div class="input-group pull-right">
+        <div class="input-group pull-left" style="width:100%;">
             <input id="search_text" type="text" class="form-control search-query" placeholder="Search songs and artists" />
             <span class="input-group-btn">
                 <button class="btn btn-primary" disabled><i class="glyphicon glyphicon-search"></i></button>
             </span>
         </div>
 
+        <div class="top_margin">
+            <h3 class="widget-title">
+                <span>Statistics</span>
+            </h3>
+            <span>Genres x Songs Count</span>
+            @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
+            <svg id="barChart"></svg>
+        </div>
     </aside>
-    <aside class="aside-right">
+    <aside id="aside-right">
         <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
             @*checking if there are highlights*@
             @{if (Model != null)
                 {
-                    var count1 = Model.Count >= 5 ? 5 : Model.Count;
+                    var count1 = Model.Highlights.Count >= 5 ? 5 : Model.Highlights.Count;
                     <div>
                         <ol class="carousel-indicators">
                             @*looping on all highlights and add bolets for each item for the home page songs-display control
@@ -244,7 +275,7 @@
                                 //set the first item to be the active one (the first focused item)
                                 for (int i = 0; i < count1; i++)
                                 {
-                                    var highlight = Model[i];
+                                    var highlight = Model.Highlights[i];
                                     string cla = i == 0 ? "item active" : "item";
 
                                     <div id="main-wrap" class="@cla">
@@ -287,15 +318,15 @@
             }
         </div>
         <div class="article_container">
-            @{var count = Model.Count >= 5 ? 5 : Model.Count;
+            @{var count = Model.Highlights.Count >= 5 ? 5 : Model.Highlights.Count;
 
-                for (int i = count; i < Model.Count; i++)
+                for (int i = count; i < Model.Highlights.Count; i++)
                 {
-                    var highlight = Model[i];
+                    var highlight = Model.Highlights[i];
 
                     <article class="single-article">
-                        <div class="featured-image">
-                            <a asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID"><img src="http://img.youtube.com/vi/@highlight.YoutubeId/mqdefault.jpg" alt="" scale="0"></a>
+                        <div>
+                            <a class="featured-image" asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID"><img src="http://img.youtube.com/vi/@highlight.YoutubeId/mqdefault.jpg" alt="" scale="0"></a>
                         </div>
 
                         <div class="article-content clearfix">
@@ -321,3 +352,82 @@
         </div>
     </aside>
 </div>
+
+@*Genre Data Script*@
+<script>
+  var genre_data = @Html.Raw(JsonConvert.SerializeObject(Model.GenreData));
+
+  var margin = {
+      top: 20,
+      right: 20,
+      bottom: 50,
+      left: 40
+    },
+    width = 300 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+
+  var x = d3.scale.ordinal()
+    .rangeRoundBands([width, 0], 0.1);
+
+  var y = d3.scale.linear()
+    .range([0, height]);
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+ var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format("d"))
+    .tickSubdivide(0);
+
+
+  var svg = d3.select("svg#barChart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom+20)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    x.domain(genre_data.map(function(d) { return d.Title; }));
+
+    y.domain([d3.max(genre_data, function(d) {
+    return d.Count;
+  }), 0]);
+
+  //g : Title attributes.
+  svg.append("g")
+    .attr("class", "y axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+    .selectAll("text")
+    .attr("transform", "rotate(90)")
+    .attr("x", 5)
+    .attr("y", -4)
+    .attr("dx", ".6em")
+    .style("text-anchor", "start");
+
+  svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
+
+  svg.selectAll(".bar")
+      .data(genre_data)
+    .enter().append("rect")
+    .attr("class", "bar")
+
+    .attr("x", function(d) {
+      return x(d.Title);
+    })
+    .attr("width", x.rangeBand())
+    .attr("y", function(d) {
+      return y(d.Count);
+    })
+    .attr("height", function(d) {
+      return height - y(d.Count);
+    });
+
+</script>
+
+
