@@ -9,52 +9,65 @@
     #song_details_container {
         column-count: 2;
     }
+
+    .side_left {
+        width: auto;
+        display: inline-block;
+    }
+
+    .side_right {
+        vertical-align: central;
+        display: inline-block;
+        width: auto;
+    }
+
+    .youtube_display {
+       
+    }
 </style>
 
-<h2>Details</h2>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></span></a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-<div>
-</div>
-<div>
-    <iframe width="640" height="390" src="@Model.YouTubeUrl" frameborder="0"
-            allowfullscreen></iframe>
-</div>
-<div>
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Artist)
-        </dt>
-        <dd>
+    <div>
+        <div class="side_left">
+            <h1>@Html.DisplayFor(model => model.Name)</h1>
+        </div>
+        <div class="side_right">
+            <a asp-action="Edit" title="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></span></a>
+        </div>
+    </div>
+    <a asp-controller="Artist" asp-action="Details" asp-route-id="@Model.ArtistId">
+        <h4>
             @Html.DisplayFor(model => model.Artist.Name)
             @Html.DisplayFor(model => model.Artist.LastName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Genre)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Genre)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Composer)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Composer)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ReleaseDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ReleaseDate)
-        </dd>
-    </dl>
-</div>
+        </h4>
+    </a>   
 
+    @Html.Partial("_Partial_Canvas_Decor")
+
+    <div>
+        <iframe class="youtube_display" width="640" height="390" src="https://www.youtube.com/embed/@Model.YouTubeID" frameborder="0"
+                allowfullscreen></iframe>
+    </div>
+    <div>
+        <dl class="dl-horizontal">          
+            <dt>
+                @Html.DisplayNameFor(model => model.Genre)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Genre)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Composer)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Composer)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ReleaseDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ReleaseDate)
+            </dd>
+        </dl>
+    </div>
+</div>
