@@ -19,6 +19,9 @@
     p {
         cursor: pointer;
     }
+    a:hover {
+        text-decoration-line: none;
+    }
 </style>
 
 <h1>@ViewData["Title"]</h1>
@@ -63,7 +66,7 @@
                     type: "GET",
                 })
                     //when it's done - set the new collection in the partial view,
-                    //then set the search box value to none, and register again for the 
+                    //then set the search box value to none, and register again for the
                     //sorting links.
                     .done(function (partialViewResult) {
                         $("#refTable").html(partialViewResult);
