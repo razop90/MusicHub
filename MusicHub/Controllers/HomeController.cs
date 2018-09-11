@@ -46,11 +46,9 @@ namespace MusicHub.Controllers
             var highlights = new List<Highlight>();
             if (query.Count > 0)
             {
-                //If there are at least 5 songs - count 5 songs, 
-                //unlse - count until the start of the list.
-                //var count = query.Count >= 5 ? query.Count - 6 : 0;
-                //Looping from the end of the list 5 times or untill the head of the list.
-                //Depending on the 'count' parameter.
+                //Creating highlights in reverse order,
+                //thats how the most recent song are in higher priority 
+                //to be displayed in the main highlights display control.
                 for (int i = query.Count - 1; i > 0; i--)
                 {
                     var highlight = query[i];

@@ -32,36 +32,71 @@
     a:hover {
         text-decoration-line: none;
     }
+
+    #content {
+        overflow: auto;
+        width: 100%;
+    }
+
+    #left {
+        width: 60%;
+        min-width:450px;
+        margin: 5px;
+        padding: 1em;
+    }
+    #right {
+        width: auto;
+        margin: 5px;
+        padding: 1em;
+
+    }
+    .content {
+        line-height: 1.5;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    #left {
+        float: left;
+    }
+
+    #right {
+        float:  none;
+    }
+
+    .youtube_container{
+        width:100%;
+    }
 </style>
 
 <div>
-    <div>
+    <section>
         <div class="side_left">
             <h1>@Html.DisplayFor(model => model.Name)</h1>
         </div>
         <div class="side_right">
             <a asp-action="Edit" title="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></span></a>
         </div>
-    </div>
-    <div>
-        <span class="artist_section">
+    </section>
+    @if (Model.Artist != null)
+    {
+        <section class="artist_section">
             <b>by</b>
             <a asp-controller="Artist" asp-action="Details" asp-route-id="@Model.ArtistId">
                 @Html.DisplayFor(model => model.Artist.Name)
                 @Html.DisplayFor(model => model.Artist.LastName)
             </a>
-        </span>
-    </div>
+        </section>
+    }
 </div>
 @Html.Partial("_Partial_Canvas_Decor")
 
-<div id="song_details_container">
-    <div>
-        <iframe width="640" height="390" src="https://www.youtube.com/embed/@Model.YouTubeID" frameborder="0"
+<div id="content">
+    <div id="left">
+        <iframe class="youtube_container" height="390" src="https://www.youtube.com/embed/@Model.YouTubeID" frameborder="0"
                 allowfullscreen></iframe>
     </div>
-    <div>
-        <dl class="dl-horizontal">
+    <div id="right">
+        <dl class="dl-horizontal content">
             <dt>
                 @Html.DisplayNameFor(model => model.Genre)
             </dt>
