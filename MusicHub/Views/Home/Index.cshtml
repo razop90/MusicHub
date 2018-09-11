@@ -1,5 +1,6 @@
 ﻿@model MusicHub.Models.HomeViewModels.IndexViewModel
 
+@using MusicHub.Classes;
 @using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Home Page";
@@ -231,6 +232,7 @@
             <span>Search</span>
         </h3>
 
+        @*Search bar*@
         <div class="input-group pull-left" style="width:100%;">
             <input id="search_text" type="text" class="form-control search-query" placeholder="Search songs and artists" />
             <span class="input-group-btn">
@@ -238,89 +240,91 @@
             </span>
         </div>
 
+        @*Statistics section*@
         <div class="top_margin">
             <h3 class="widget-title">
                 <span>Statistics</span>
             </h3>
+            @*Genres graph*@
             <span>Genres x Songs Count</span>
             @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
             <svg id="barChart"></svg>
         </div>
     </aside>
-    <aside id="aside-right">
-        <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-            @*checking if there are highlights*@
-            @{if (Model != null)
-                {
-                    var count1 = Model.Highlights.Count >= 5 ? 5 : Model.Highlights.Count;
-                    <div>
-                        <ol class="carousel-indicators">
-                            @*looping on all highlights and add bolets for each item for the home page songs-display control
-                                set the first item to be the active one (the first focused item)*@
-                            @for (int i = 0; i < count1; i++)
+    @if (Model.Highlights != null)
+    {
+        //Count of highlights to display.
+        //If there are at least 'Consts.HighlightsToDisplay' highlights - takes them, if not - takes all what we've got.
+        var count = Model.Highlights.Count >= @Consts.HighlightsToDisplay ? @Consts.HighlightsToDisplay : Model.Highlights.Count;
+
+        <aside id="aside-right">
+            <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+                @*checking if there are highlights*@
+
+                <div>
+                    <ol class="carousel-indicators">
+                        @*looping on all highlights and add bolets for each item for the home page songs-display control
+                            set the first item to be the active one (the first focused item)*@
+                        @for (int i = 0; i < count; i++)
+                        {
+                            if (i == 0)
                             {
-                                if (i == 0)
-                                {
-                                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                                }
-                                else
-                                {
-                                    <li data-target="#myCarousel" data-slide-to="@i"></li>
-                                }
+                                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
                             }
-                        </ol>
-                        <div class="carousel-inner" role="listbox">
-                            @{
-                                //looping on all highligts and add their data in a listbox
-                                //set the first item to be the active one (the first focused item)
-                                for (int i = 0; i < count1; i++)
-                                {
-                                    var highlight = Model.Highlights[i];
-                                    string cla = i == 0 ? "item active" : "item";
+                            else
+                            {
+                                <li data-target="#myCarousel" data-slide-to="@i"></li>
+                            }
+                        }
+                    </ol>
+                    <div class="carousel-inner" role="listbox">
+                        @{
+                            //looping on all highligts and add their data in a listbox
+                            //set the first item to be the active one (the first focused item)
+                            for (int i = 0; i < count; i++)
+                            {
+                                var highlight = Model.Highlights[i];
+                                string cla = i == 0 ? "item active" : "item";
 
-                                    <div id="main-wrap" class="@cla">
-                                        <img id="image" src="http://img.youtube.com/vi/@highlight.YoutubeId/maxresdefault.jpg" class="img-responsive" />
+                                <div id="main-wrap" class="@cla">
+                                    <img id="image" src="http://img.youtube.com/vi/@highlight.YoutubeId/maxresdefault.jpg" class="img-responsive" />
 
-                                        <div class="highlight-wrapper">
-                                            <div class="carousel-caption" role="option">
-                                                <h1 class="highlight-title">
-                                                    <br>@highlight.SongName
-                                                </h1>
+                                    <div class="highlight-wrapper">
+                                        <section class="carousel-caption" role="option">
+                                            <h1 class="highlight-title">
+                                                <br>@highlight.SongName
+                                            </h1>
 
-                                                <span class="highlight-body">
-                                                    <b>by</b>
-                                                    <a asp-controller="Artist" asp-action="Details" asp-route-id="@highlight.ArtistID">@highlight.ArtistName</a>
-                                                    <br />
-                                                    <br />
-                                                </span>
-
-                                                <a class="highlight-button" asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID">@highlight.ButtonContent</a>
-
-                                                @*empty space*@
+                                            <span class="highlight-body">
+                                                <b>by</b>
+                                                <a asp-controller="Artist" asp-action="Details" asp-route-id="@highlight.ArtistID">@highlight.ArtistName</a>
                                                 <br />
                                                 <br />
-                                            </div>
-                                        </div>
+                                            </span>
+
+                                            <a class="highlight-button" asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID">@highlight.ButtonContent</a>
+
+                                            @*empty space*@
+                                            <br />
+                                            <br />
+                                        </section>
                                     </div>
-                                }
+                                </div>
                             }
-                        </div>
+                        }
                     </div>
-                    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                }
-            }
-        </div>
-        <div class="article_container">
-            @{var count = Model.Highlights.Count >= 5 ? 5 : Model.Highlights.Count;
-
-                for (int i = count; i < Model.Highlights.Count; i++)
+                </div>
+                <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+            <div class="article_container">
+                @for (int i = count; i < Model.Highlights.Count; i++)
                 {
                     var highlight = Model.Highlights[i];
 
@@ -348,9 +352,9 @@
                         </div>
                     </article>
                 }
-            }
-        </div>
-    </aside>
+            </div>
+        </aside>
+    }
 </div>
 
 @*Genre Data Script*@

@@ -1,6 +1,44 @@
 ﻿@model IEnumerable<MusicHub.Models.LocalModels.ArtistModel>
 
-<table id="table_artists" class="table table-hover">
+<style>
+    table.scroll {
+        width: 100%; /* Optional */
+        /* border-collapse: collapse; */
+        /*border: 2px solid black;*/
+    }
+
+        table.scroll tbody,
+        table.scroll thead {
+            display: block;
+        }
+
+    thead tr th {
+        height: 30px;
+        line-height: 30px;
+        /*text-align: left;*/
+    }
+
+    table.scroll tbody {
+        height: 600px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    tbody {
+        /*border-top: 2px solid black;*/
+    }
+
+        tbody td, thead th {
+            width: 450px; /* Optional */
+            /*border-right: 1px solid black;*/
+        }
+
+            tbody td:last-child, thead th:last-child {
+                border-right: none;
+            }
+</style>
+
+<table id="table_artists" class="table table-hover scroll">
     <thead>
         <tr>
             <!-- Sort by links -->
