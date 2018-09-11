@@ -2,25 +2,30 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MusicHub.Classes.Home;
 using MusicHub.Data;
 using MusicHub.Models;
 using MusicHub.Models.HomeViewModels;
+using Newtonsoft.Json;
 
 namespace MusicHub.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _iConfig;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, IConfiguration iConfig)
         {
             _context = context;
+            _iConfig = iConfig;
         }
 
         public IActionResult Index()
-        {
+        {          
             //Getting songs and artist collections from db.
             var songs = _context.Songs.ToList();
             var artists = _context.Artists.ToList();
@@ -99,10 +104,33 @@ namespace MusicHub.Controllers
 
             #endregion
 
+            #region News items            
+            
+            // Fetch json with top news headlines
+            var newsJson = new WebClient().DownloadString(_iConfig.GetValue<string>("MusicNewsAPI"));
+            dynamic dynJson = JsonConvert.DeserializeObject(newsJson);
+            var newsArticles = new List<Article>();
+            // Populate articles list
+            foreach (var article in dynJson.articles)
+            {
+                newsArticles.Add(new Article
+                {
+                    Author = article.author,
+                    Title = article.title,
+                    Description = article.description,
+                    URL = article.url,
+                    ImageURL = article.urlToImage,
+                    PublishDate = article.publishedAt
+                });
+            }
+
+            #endregion
+
             var model = new IndexViewModel()
             {
                 Highlights = highlights,
-                GenreData = genres
+                GenreData = genres,
+                NewsArticles = newsArticles
             };
 
             return View(model);

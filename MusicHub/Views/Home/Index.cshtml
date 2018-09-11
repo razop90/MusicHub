@@ -219,6 +219,12 @@
     .top_margin {
         margin-top: 70px;
     }
+
+    .news-wrapper img {
+        width: 94px;
+        height: 74px;
+        border: 2px solid #e5e7e8;
+    }
 </style>
 
 <head>
@@ -249,6 +255,36 @@
             <span>Genres x Songs Count</span>
             @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
             <svg id="barChart"></svg>
+        </div>
+
+        <!-- News stories -->
+        <div class="news-wrapper">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    MTV Top New Stories
+                </div>
+                <ul class="media-list">
+                    @{foreach (var article in Model.NewsArticles)
+                        {
+                            <li class="media">
+                                <img src="@article.ImageURL" alt="" class="img-circle pull-left">
+
+                                <div class="media-body">
+                                    <span class="text-muted pull-right">
+                                        <small class="text-muted">@article.PublishDate</small>
+                                    </span>
+                                    <a href="@article.URL">
+                                        <strong class="text-success">@article.Title</strong>
+                                    </a>
+                                    <p>
+                                        @article.Description
+                                    </p>
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
         </div>
     </aside>
     @if (Model.Highlights != null)

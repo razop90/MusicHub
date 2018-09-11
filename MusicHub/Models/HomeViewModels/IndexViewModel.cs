@@ -10,5 +10,6 @@ namespace MusicHub.Models.HomeViewModels
     {
         public List<Highlight> Highlights { get; set; }
         public List<GraphData> GenreData { get; set; }
+        public List<Article> NewsArticles { get; set; }
     }
 }
