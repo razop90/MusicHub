@@ -9,33 +9,36 @@
         text-decoration-line: none;
     }
 
-    b{
+    b {
         font-size: 16px;
     }
 </style>
 
 <h2>Delete Song</h2>
 
- <div>
-     <span>
-         <b>Are you sure you want to delete</b>
-         <b>
-             @Html.DisplayFor(model => model.Name)
-         </b>
-         <b>by</b>
-         <b>
-             @Html.DisplayFor(model => model.Artist.Name)
-             @Html.DisplayFor(model => model.Artist.LastName)
-         </b>    
-         <b>?</b>
-     </span>
+<div>
+    <span>
+        <b>Are you sure you want to delete</b>
+        <b>
+            @Html.DisplayFor(model => model.Name)
+        </b>
+        @if (Model.Artist != null)
+        {
+            <b>by</b>
+            <b>
+                @Html.DisplayFor(model => model.Artist.Name)
+                @Html.DisplayFor(model => model.Artist.LastName)
+            </b>
+        }
+        <b>?</b>
+    </span>
 </div>
- <div>
-     <br />     
-     <br />
-     <form asp-action="Delete">
-         <input type="hidden" asp-for="ID" />
-         <input type="submit" value="Delete" class="btn btn-default" /> |
-         <a asp-action="Index">Back to List</a>
-     </form>
- </div>
+<div>
+    <br />
+    <br />
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
