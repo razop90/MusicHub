@@ -1,0 +1,25 @@
+﻿<style>
+    #myCanvas {
+        border: 0px solid #d3d3d3;
+        border-radius: 0px 102px;
+        width: 100%;
+    }
+</style>
+
+
+<canvas id="myCanvas" height="3"></canvas>
+
+
+<script type="text/javascript">
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+
+    // Create gradient
+    var grd = ctx.createLinearGradient(0, 0, 200, 3);
+    grd.addColorStop(0, "DeepSkyBlue ");
+    grd.addColorStop(1, "white");
+
+    // Fill with gradient
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 200, 3);
+</script>

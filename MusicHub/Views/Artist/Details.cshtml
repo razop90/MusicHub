@@ -5,10 +5,15 @@
 }
 
 <style>
-    #myCanvas {
-        border: 0px solid #d3d3d3;
-        border-radius: 0px 102px;
-        width: 100%;
+    .side_left {
+        width: auto;
+        display: inline-block;
+    }
+
+    .side_right {
+        vertical-align: central;
+        display: inline-block;
+        width: auto;
     }
     a:hover {
         text-decoration-line: none;
@@ -16,11 +21,17 @@
 </style>
 
 <div>
-    <h1>@Html.DisplayFor(model => model.FullName)</h1>
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.ID" title="edit artist"><span class="glyphicon glyphicon-pencil" /></a>        
+        <div class="side_left">
+            <h1>@Html.DisplayFor(model => model.FullName)</h1>
+        </div>
+        <div class="side_right">
+            <a asp-action="Edit" asp-route-id="@Model.ID" title="Edit"><span class="glyphicon glyphicon-pencil" /></a>
+        </div>
     </div>
-    <canvas id="myCanvas" height="3"></canvas>
+
+    @Html.Partial("_Partial_Canvas_Decor")
+
     <table class="table">
         <tr>
             <th>Song Title</th>
@@ -43,16 +54,3 @@
         }
     </table>
 </div>
-<script type="text/javascript">
-var c = document.getElementById("myCanvas");
-var ctx = c.getContext("2d");
-
-    // Create gradient
-    var grd = ctx.createLinearGradient(0, 0, 200, 3);
-    grd.addColorStop(0, "DeepSkyBlue ");
-    grd.addColorStop(1, "white");
-
-    // Fill with gradient
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, 200, 3);
-</script>
