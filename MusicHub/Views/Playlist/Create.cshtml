@@ -1,21 +1,10 @@
-﻿@model MusicHub.Models.LocalModels.ArtistModel
+﻿@model MusicHub.Models.LocalModels.PlaylistModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
 <style>
-    /* Enlarge input fields on focus with 1 second delay */
-    .form-control:focus {
-        -webkit-transform: scale(1.03);
-        -webkit-transition: all 1s ease-in-out;
-        -ms-transform: scale(1.03);
-        transform: scale(1.03);
-        -moz-transition: all 1s ease-in-out;
-        -o-transition: all 1s ease-in-out;
-        transition: all 1s ease-in-out;
-    }
-
     p {
         cursor: pointer;
     }
@@ -59,17 +48,21 @@
             }
 
 
-    .bottom-left {
+    .bottom-right {
         position: absolute;
         bottom: 20px;
         left: 10px;
     }
 </style>
 
-<h2>Create new Artist</h2>
+
+<h2>Create</h2>
+
+<h4>PlaylistModel</h4>
 <hr />
 <div class="row">
     <form asp-action="Create">
+
         <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -78,11 +71,12 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
+
 
         <div class="form-group">
             <div class="col-md-10">
@@ -106,25 +100,25 @@
 
                     <tbody>
                         @{
-                            List<MusicHub.Models.ArtistViewModels.AssignedSongData> songs = ViewBag.Songs;
+                            List<MusicHub.Models.LocalModels.SongModel> songs = ViewBag.Songs;
 
                             foreach (var song in songs)
                             {<!-- Add table row with song name and genere -->
                                 <tr>
                                     <td>
                                         <input type="checkbox"
-                                               name="selectedSongs"
-                                               value="@song.SongID"
-                                               @(Html.Raw(song.Assigned ? "checked=\"checked\"" : "")) />
+                                        name="selectedSongs"
+                                        value="@song.ID" />
+                                        @*@(Html.Raw(song.Assigned ? "checked=\"checked\"" : ""))*@
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => song.Title)
-                                    </td> 
-                                    <td>
-                                        @Html.DisplayFor(modelItem => song.ArtistName)
+                                        @Html.DisplayFor(modelItem => song.Name)
                                     </td>
                                     <td>
-                                        <a asp-controller="Song" asp-action="Details" asp-route-id="@song.SongID">Details</a>
+                                        @Html.DisplayFor(modelItem => song.Artist.FullName)
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Song" asp-action="Details" asp-route-id="@song.ID">Details</a>
                                     </td>
                                 </tr>
                             }
@@ -134,15 +128,12 @@
             </div>
         </div>
 
-        <div class="form-group bottom-left">
-            <input type="submit" value="Create" class="btn btn-primary" />
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary bottom-right" />
         </div>
     </form>
-</div>
 
-@*<div>
-        <a asp-action="Index">Back to List</a>
-    </div>*@
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

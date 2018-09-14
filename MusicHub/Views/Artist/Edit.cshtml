@@ -15,19 +15,62 @@
         -o-transition: all 1s ease-in-out;
         transition: all 1s ease-in-out;
     }
+
+    p {
+        cursor: pointer;
+    }
+
     a:hover {
         text-decoration-line: none;
+    }
+
+    table.scroll {
+        width: 100%;
+    }
+
+        table.scroll tbody,
+        table.scroll thead {
+            display: block;
+        }
+
+    thead tr th {
+        height: 30px;
+        line-height: 30px;
+        /*text-align: left;*/
+    }
+
+    table.scroll tbody {
+        height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    tbody {
+        /*border-top: 2px solid black;*/
+    }
+
+        tbody td, thead th {
+            width: 450px; /* Optional */
+            /*border-right: 1px solid black;*/
+        }
+
+            tbody td:last-child, thead th:last-child {
+                border-right: none;
+            }
+
+
+    .bottom-left {
+        position: absolute;
+        bottom: 20px;
+        left: 10px;
     }
 </style>
 
 <h2>Edit Artist</h2>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+    <form asp-action="Edit">
+        <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
@@ -40,37 +83,62 @@
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
+        </div>
 
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <table class="table table-responsive">
-                        <thead><h4>Select artists songs</h4></thead>
+        <div class="form-group">
+            <div class="col-md-10">
+                <table class="table table-hover scroll">
+                    <thead>
                         <tr>
-                            @{
-                                int cnt = 0;
-                                List<MusicHub.Models.ArtistViewModels.AssignedSongData> songs = ViewBag.Songs;
+                            <th>
+                                <p>Select Songs</p>
+                            </th>
+                            <th>
+                                @*<p id="search_name"><a>Name</a></p>*@
+                            </th>
+                            <th>
+                                @*<p id="search_artist"><a>Artist</a></p>*@
+                            </th>
+                            <th>
+                                @*<p id="search_artist"><a>Artist</a></p>*@
+                            </th>
+                        </tr>
+                    </thead>
 
-                                foreach (var song in songs)
-                                {
-                                    if (cnt++ % 3 == 0)
-                                    {
-                                    @:</tr><tr>
-                                    }
-                                    @:<td>
+                    <tbody>
+                        @{
+                            List<MusicHub.Models.ArtistViewModels.AssignedSongData> songs = ViewBag.Songs;
+
+                            foreach (var song in songs)
+                            {<!-- Add table row with song name and genere -->
+                                <tr>
+                                    <td>
                                         <input type="checkbox"
                                                name="selectedSongs"
                                                value="@song.SongID"
                                                @(Html.Raw(song.Assigned ? "checked=\"checked\"" : "")) />
-                                        @song.Title
-                                    @:</td>
-                                }
-                            @:</tr>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => song.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => song.ArtistName)
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Song" asp-action="Details" asp-route-id="@song.SongID">Details</a>
+                                    </td>
+                                </tr>
                             }
-                        </table>
-                    </div>
-                </div>
-            </form>
-    </div>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group bottom-left">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 
 @section Scripts {

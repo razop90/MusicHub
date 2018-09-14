@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MusicHub.Classes;
 using MusicHub.Data;
 using MusicHub.Models.LocalModels;
 
 namespace MusicHub.Controllers
 {
-    [Authorize]
     public class SongController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -159,6 +159,7 @@ namespace MusicHub.Controllers
         }
 
         // GET: Song/Create
+        [Authorize(Roles = Consts.Admin)]
         public IActionResult Create()
         {
 
@@ -175,6 +176,7 @@ namespace MusicHub.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = Consts.Admin)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Name,ArtistId,Genre,Composer,ReleaseDate,YouTubeUrl")] SongModel songModel)
         {
@@ -189,6 +191,7 @@ namespace MusicHub.Controllers
         }
 
         // GET: Song/Edit/5
+        [Authorize(Roles = Consts.Admin)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -214,6 +217,7 @@ namespace MusicHub.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = Consts.Admin)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,ArtistId,Genre,Composer,ReleaseDate,YouTubeUrl")] SongModel songModel)
         {
@@ -246,7 +250,8 @@ namespace MusicHub.Controllers
             return View(songModel);
         }
 
-        // GET: Song/Delete/5
+        // GET: Song/Delete/5 
+        [Authorize(Roles = Consts.Admin)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -267,11 +272,26 @@ namespace MusicHub.Controllers
 
         // POST: Song/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = Consts.Admin)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var songModel = await _context.Songs.SingleOrDefaultAsync(m => m.ID == id);
+
+            //Gets connections from the db including the songs inside.
+            var connections = await _context.PlaylistSongsConnections
+            .Include(connection => connection.Song).ToListAsync();
+
+            //Getting all connections of the given song.
+            var query = (from connection in connections
+                         where connection.Song != null && connection.Song.ID == songModel.ID
+                         select connection).ToList();
+
+            //Removing all the connections.
+            _context.PlaylistSongsConnections.RemoveRange(query);
+            //Removing song.
             _context.Songs.Remove(songModel);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

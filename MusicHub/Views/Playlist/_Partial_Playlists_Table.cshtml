@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MusicHub.Models.LocalModels.ArtistModel>
+﻿@model IEnumerable<MusicHub.Models.LocalModels.PlaylistModel>
 
 <style>
     table.scroll {
@@ -36,7 +36,6 @@
             tbody td:last-child, thead th:last-child {
                 border-right: none;
             }
-
 </style>
 
 <table id="table_artists" class="table table-hover scroll">
@@ -47,7 +46,7 @@
                 <p id="search_name"><a>@Html.DisplayNameFor(model => model.Name)</a></p>
             </th>
             <th>
-                <p id="search_last_name"><a>@Html.DisplayNameFor(model => model.LastName)</a></p>
+                <p id="search_creation_date"><a>@Html.DisplayNameFor(model => model.CreationDate)</a></p>
             </th>
             <th>
                 Options
@@ -62,7 +61,7 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
+                    @Html.DisplayFor(modelItem => item.CreationDate)
                 </td>
                 <td>
                     <a asp-action="Edit" title="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-pencil"></span></a> |

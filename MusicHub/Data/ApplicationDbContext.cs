@@ -14,6 +14,8 @@ namespace MusicHub.Data
     {
         public DbSet<ArtistModel> Artists { get; set; }
         public DbSet<SongModel> Songs { get; set; }
+        public DbSet<PlaylistModel> Playlists { get; set; }
+        public DbSet<PlaylistSongModel> PlaylistSongsConnections { get; set; }
         public DbSet<Location> Locations { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
