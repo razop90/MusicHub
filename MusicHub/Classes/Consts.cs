@@ -134,13 +134,6 @@ namespace MusicHub.Classes
                     Lat = 32.0667626,
                     Long = 34.836875899999995
                 };
-                var tzurHome = new Location
-                {
-                    Title = "Tzur's Home",
-                    Description = "Tevet St 9, Hod Hasharon, Israel",
-                    Lat = 32.1608397,
-                    Long = 34.884634000000005
-                };
                 var colman = new Location
                 {
                     Title = "College of Management",
@@ -149,7 +142,7 @@ namespace MusicHub.Classes
                     Long = 34.77278720000004
                 };
 
-                context.Locations.AddRange(new Location[] { aliceHome, razHome, baruchHome, tzurHome, colman });
+                context.Locations.AddRange(new Location[] { aliceHome, razHome, baruchHome, colman });
                 context.SaveChanges();
 
                 #endregion
