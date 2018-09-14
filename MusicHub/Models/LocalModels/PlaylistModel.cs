@@ -21,11 +21,12 @@ namespace MusicHub.Models.LocalModels
 
         [Required]
         [Display(Name = "Name")]
-        [StringLength(30, ErrorMessage = "Playlist's name cannot be longer than 30 characters.")]
+        [StringLength(20, ErrorMessage = "Playlist's name cannot be longer than 20 characters.")]
         public string Name { get; set; }
 
         [Required]
         [Display(Name = "Description")]
+        [StringLength(40, ErrorMessage = "Playlist's description cannot be longer than 40 characters.")]
         public string Description { get; set; }
 
         [DataType(DataType.Date)]

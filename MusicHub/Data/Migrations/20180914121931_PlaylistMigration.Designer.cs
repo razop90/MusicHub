@@ -227,11 +227,12 @@ namespace MusicHub.Data.Migrations
                     b.Property<DateTime>("CreationDate");
 
                     b.Property<string>("Description")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(40);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(30);
+                        .HasMaxLength(20);
 
                     b.Property<string>("UserId");
 
