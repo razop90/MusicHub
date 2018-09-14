@@ -1,0 +1,27 @@
+﻿@model MusicHub.Models.LocalModels.PlaylistModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete Playlist</h2>
+
+<div>
+    <span>
+        <b>Are you sure you want to delete</b>
+        <b>
+            @Html.DisplayFor(model => model.Name)
+        </b>
+        <b>playlist?</b>
+    </span>
+</div>
+
+<div>
+    <br />
+    <br />
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

@@ -1,4 +1,4 @@
-﻿@model MusicHub.Models.LocalModels.ArtistModel
+﻿@model MusicHub.Models.LocalModels.PlaylistModel
 
 @{
     ViewData["Title"] = "Details";
@@ -55,19 +55,52 @@
     a:hover {
         text-decoration-line: none;
     }
+
+    .cat-links {
+        background-color: #289dcc;
+        border-radius: 3px;
+        color: #ffffff;
+        font-size: 16px;
+        padding: 3px 10px;
+        overflow: hidden;
+    }
+
+        .cat-links a {
+            color: white;
+            overflow: hidden;
+        }
+
+            .cat-links a:hover {
+                color: white;
+                text-decoration-line: none;
+            }
+
+    .numbered {
+        background-color: #d7e2e7;
+        border-radius: 3px;
+        color: #002ea2;
+        padding: 3px 10px;
+        width:unset;
+        overflow: hidden;
+    }
 </style>
 
 <div>
     <section>
         <div class="side_left">
-            <h1>@Html.DisplayFor(model => model.FullName)</h1>
+            <h1>@Html.DisplayFor(model => model.Name)</h1>
         </div>
         <div class="side_right">
+            <span class="cat-links">Playlist</span>
             <a asp-action="Edit" asp-route-id="@Model.ID" title="Edit"><span class="glyphicon glyphicon-pencil" /></a>
         </div>
     </section>
 
     @Html.Partial("_Partial_Canvas_Decor")
+
+    <div>
+        <span class="numbered">@Model.Playlist.Count Songs</span>
+    </div>
 
     <table class="table table-hover scroll">
         <thead>
@@ -78,8 +111,8 @@
             </tr>
         </thead>
         <tbody>
-            <!-- iterate for each song of the artist -->
-            @foreach (var song in Model.Songs)
+            <!-- iterate for each song of the playlist -->
+            @foreach (var song in Model.Playlist)
             {<!-- Add table row with song name and genere -->
                 <tr>
                     <td>

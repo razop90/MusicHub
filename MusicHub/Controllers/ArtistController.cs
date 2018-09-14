@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MusicHub.Classes;
 using MusicHub.Data;
 using MusicHub.Models.ArtistViewModels;
 using MusicHub.Models.LocalModels;
 
 namespace MusicHub.Controllers
 {
-    [Authorize]
     public class ArtistController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -148,6 +148,7 @@ namespace MusicHub.Controllers
         }
 
         // GET: Artist/Create
+        [Authorize(Roles = Consts.Admin)]
         public IActionResult Create()
         {
             // Populate all the songs because we use a new empty artist
@@ -160,6 +161,7 @@ namespace MusicHub.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = Consts.Admin)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Name,LastName")] ArtistModel artistModel, string[] selectedSongs)
         {
@@ -177,7 +179,8 @@ namespace MusicHub.Controllers
             return View(artistModel);
         }
 
-        // GET: Artist/Edit/5
+        // GET: Artist/Edit/5 
+        [Authorize(Roles = Consts.Admin)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -202,6 +205,7 @@ namespace MusicHub.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = Consts.Admin)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, string[] selectedSongs)
         {
@@ -239,6 +243,7 @@ namespace MusicHub.Controllers
         }
 
         // GET: Artist/Delete/5
+        [Authorize(Roles = Consts.Admin)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -258,6 +263,7 @@ namespace MusicHub.Controllers
 
         // POST: Artist/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = Consts.Admin)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -272,7 +278,7 @@ namespace MusicHub.Controllers
 
         private void PopulateAssignedSongsData(ArtistModel artistModel)
         {
-            var allSongs = _context.Songs;
+            var allSongs = _context.Songs.Include(song => song.Artist);
             var artistSongs = new HashSet<int>(artistModel.Songs.Select(song => song.ID));
             var viewModel = new List<AssignedSongData>();
             foreach (var song in allSongs)
@@ -281,6 +287,7 @@ namespace MusicHub.Controllers
                 {
                     SongID = song.ID,
                     Title = song.Name,
+                    ArtistName = song?.Artist?.FullName,
                     Assigned = artistSongs.Contains(song.ID)
                 });
             }

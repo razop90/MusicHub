@@ -9,6 +9,7 @@ namespace MusicHub.Models.ArtistViewModels
     {
         public int SongID { get; set; }
         public string Title { get; set; }
+        public string ArtistName { get; set; }
         public bool Assigned { get; set; }
     }
 }
