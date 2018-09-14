@@ -83,6 +83,10 @@
         width:unset;
         overflow: hidden;
     }
+
+    .description{
+        font-size:14px;
+    }
 </style>
 
 <div>
@@ -94,6 +98,8 @@
             <span class="cat-links">Playlist</span>
             <a asp-action="Edit" asp-route-id="@Model.ID" title="Edit"><span class="glyphicon glyphicon-pencil" /></a>
         </div>
+        <div class="description">@Model.Description</div>
+
     </section>
 
     @Html.Partial("_Partial_Canvas_Decor")
