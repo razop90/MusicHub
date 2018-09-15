@@ -113,11 +113,11 @@
                     });
             })
 
-            $("#search_creation_date").click(function () {
+            $("#search_last_update").click(function () {
                 $.ajax({
                     url: "/Playlist/Sort",
                     type: "GET",
-                    data: { "sortBy": "creation_date", "searchString": $("#search_text").val() }
+                    data: { "sortBy": "last_update", "searchString": $("#search_text").val() }
                 })
                     .done(function (partialViewResult) {
                         $("#refTable").html(partialViewResult);

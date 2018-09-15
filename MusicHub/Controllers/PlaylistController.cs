@@ -33,7 +33,7 @@ namespace MusicHub.Controllers
             //set default value of sort direction.
             LastDirection = "Ascending";
             //get sorted playlist collection from db.
-            var sortedPlaylists = await GetSortedPlaylists("creation_date");
+            var sortedPlaylists = await GetSortedPlaylists("last_update");
 
             return View(sortedPlaylists);
         }
@@ -66,7 +66,7 @@ namespace MusicHub.Controllers
         public async Task<ActionResult> UndoSearch()
         {
             //gets the full collection from db with a sorting operation.
-            var playlists = await GetSortedPlaylists("creation_date", string.Empty, "Ascending");
+            var playlists = await GetSortedPlaylists("last_update", string.Empty, "Ascending");
 
             return PartialView("_Partial_Playlists_Table", playlists);
         }
@@ -117,8 +117,8 @@ namespace MusicHub.Controllers
                         case "name":
                             playlists = playlists.OrderBy(a => a.Name).ToList();
                             break;
-                        case "creation_date":
-                            playlists = playlists.OrderBy(a => a.CreationDate).ToList();
+                        case "last_update":
+                            playlists = playlists.OrderBy(a => a.LastUpdated).ToList();
                             break;
                     }
                     break;
@@ -128,8 +128,8 @@ namespace MusicHub.Controllers
                         case "name":
                             playlists = playlists.OrderByDescending(a => a.Name).ToList();
                             break;
-                        case "creation_date":
-                            playlists = playlists.OrderByDescending(a => a.CreationDate).ToList();
+                        case "last_update":
+                            playlists = playlists.OrderByDescending(a => a.LastUpdated).ToList();
                             break;
                     }
                     break;
@@ -201,7 +201,7 @@ namespace MusicHub.Controllers
                     throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 
                 playlistModel.User = user;
-                playlistModel.CreationDate = DateTime.Now;
+                playlistModel.LastUpdated = DateTime.Now;
                 _context.Add(playlistModel);
                 await _context.SaveChangesAsync();
 
@@ -297,7 +297,7 @@ namespace MusicHub.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Description,CreationDate")] PlaylistModel playlistModel, string[] selectedSongs)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Description")] PlaylistModel playlistModel, string[] selectedSongs)
         {
             if (id != playlistModel.ID)
             {
@@ -308,6 +308,7 @@ namespace MusicHub.Controllers
             {
                 try
                 {
+                    playlistModel.LastUpdated = DateTime.Now;
                     _context.Update(playlistModel);
 
                     await UpdatePlaylistSongs(selectedSongs, playlistModel);

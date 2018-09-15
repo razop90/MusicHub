@@ -223,7 +223,7 @@ namespace MusicHub.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("CreationDate");
+                    b.Property<DateTime>("LastUpdated");
 
                     b.Property<string>("Description")
                         .IsRequired();

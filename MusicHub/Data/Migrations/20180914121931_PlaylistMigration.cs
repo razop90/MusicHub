@@ -22,7 +22,7 @@ namespace MusicHub.Data.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreationDate = table.Column<DateTime>(nullable: false),
+                    LastUpdated = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(maxLength: 40, nullable: false),
                     Name = table.Column<string>(maxLength: 20, nullable: false),
                     UserId = table.Column<string>(nullable: true)
