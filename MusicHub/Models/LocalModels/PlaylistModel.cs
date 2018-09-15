@@ -30,9 +30,9 @@ namespace MusicHub.Models.LocalModels
         public string Description { get; set; }
 
         [DataType(DataType.Date)]
-        [Display(Name = "Creation Date")]
+        [Display(Name = "Last Update")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime CreationDate { get; set; }
+        public DateTime LastUpdated { get; set; }
       
         [NotMapped]
         public virtual ICollection<SongModel> Playlist { get; set; } //TODO:should be a list of id's maybe?

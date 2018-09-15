@@ -257,7 +257,7 @@ namespace MusicHub.Controllers
                         if (!smodel.IsByPlaylistUserName || (playlist.User != null && smodel.UserName != null && playlist.User.UserName.ToLower().Contains(smodel.UserName.ToLower())))
                         {
                             if (!smodel.IsByPlaylistName || ((smodel.IsByPlaylistName && (searchText == null || playlist.Name.ToLower().Contains(searchText)))//Name check.
-                                || (searchText != null && playlist.CreationDate.Date.ToShortDateString().ToLower().Contains(searchText))))//Date check.
+                                || (searchText != null && playlist.LastUpdated.Date.ToShortDateString().ToLower().Contains(searchText))))//Date check.
                             {
                                 var result = new SearchResult()
                                 {

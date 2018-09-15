@@ -46,7 +46,7 @@
                 <p id="search_name"><a>@Html.DisplayNameFor(model => model.Name)</a></p>
             </th>
             <th>
-                <p id="search_creation_date"><a>@Html.DisplayNameFor(model => model.CreationDate)</a></p>
+                <p id="search_last_update"><a>@Html.DisplayNameFor(model => model.LastUpdated)</a></p>
             </th>
             <th>
             </th>
@@ -60,7 +60,7 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreationDate)
+                    @Html.DisplayFor(modelItem => item.LastUpdated)
                 </td>
                 <td>
                     <a asp-action="Edit" title="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-pencil"></span></a> |
