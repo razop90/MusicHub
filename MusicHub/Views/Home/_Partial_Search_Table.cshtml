@@ -1,0 +1,72 @@
+﻿@model MusicHub.Models.HomeViewModels.SearchModel
+
+<style>
+    table.scroll {
+        width: 100%; /* Optional */
+        /* border-collapse: collapse; */
+        /*border: 2px solid black;*/
+    }
+
+        table.scroll tbody,
+        table.scroll thead {
+            display: block;
+        }
+
+    thead tr th {
+        height: 30px;
+        line-height: 30px;
+        /*text-align: left;*/
+    }
+
+    table.scroll tbody {
+        height: 600px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    tbody {
+        /*border-top: 2px solid black;*/
+    }
+
+        tbody td, thead th {
+            width: 450px; /* Optional */
+            /*border-right: 1px solid black;*/
+        }
+
+            tbody td:last-child, thead th:last-child {
+                border-right: none;
+            }
+</style>
+
+<table id="table_artists" class="table table-hover scroll">
+    <thead>
+        <tr>
+            <!-- Sort by links -->
+            <th>
+                <p id="search_name">Match</p>
+            </th>
+            <th>
+                <p id="search_last_name">Source</p>
+            </th>
+            <th>
+                @*Options*@
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.SearchResults)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Source)
+                </td>
+                <td>
+                    <a asp-controller="@item.Source" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

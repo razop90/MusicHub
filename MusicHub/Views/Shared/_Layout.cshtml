@@ -119,10 +119,11 @@
                         <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                         <li><a asp-area="" asp-controller="Artist" asp-action="Index">Artists</a></li>
                         <li><a asp-area="" asp-controller="Song" asp-action="Index">Songs</a></li>
-                        @if (isLoggedIn) //Checking if ther is a looged in user.
+                        @if (isLoggedIn) //Checking if there is a looged in user.
                         {
                             <li><a asp-area="" asp-controller="Playlist" asp-action="Index">Playlists</a></li>
                         }
+                        <li><a asp-area="" asp-controller="Home" asp-action="Search" style="width:100px;" class="glyphicon glyphicon-search"><span style="font-family:HandWrite;"> Search</span></a></li>
                     </ul>
                     @await Html.PartialAsync("_LoginPartial")
                 </div>
