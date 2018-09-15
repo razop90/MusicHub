@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Songs";
+    var IsAdmin = User.IsInRole(Consts.Admin);
 }
+@using MusicHub.Classes;
 
 <style>
     .btn-glyphicon {
@@ -29,16 +31,19 @@
 <div class="container-fluid py-3 mt-3">
     <div class="row">
         <form asp-action="Index" method="get" class="form-search form-inline">
-            <a asp-action="Create" class="btn icon-btn btn-success">
-                <span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>
-                Create Song
-            </a>
+            @if (IsAdmin)
+            {
+                <a asp-action="Create" class="btn icon-btn btn-success">
+                    <span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>
+                    Create Song
+                </a>
+            }
             <div class="input-group pull-right">
                 <input id="search_text" type="text" class="form-control search-query" placeholder="Find song by name" />
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-primary" disabled><i class="glyphicon glyphicon-search"></i></button>
                 </span>
-            </div>              
+            </div>
             <input id="back_btn" type="button" value="Back to Full List" class="btn btn-default pull-right" />
         </form>
     </div>

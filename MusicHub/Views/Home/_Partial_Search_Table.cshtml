@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MusicHub.Models.LocalModels.ArtistModel>
+﻿@model MusicHub.Models.HomeViewModels.SearchModel
 @{
     var IsAdmin = User.IsInRole(Consts.Admin);
 }
@@ -47,34 +47,35 @@
         <tr>
             <!-- Sort by links -->
             <th>
-                <p id="search_name"><a>@Html.DisplayNameFor(model => model.Name)</a></p>
+                <p id="search_name">Match</p>
             </th>
             <th>
-                <p id="search_last_name"><a>@Html.DisplayNameFor(model => model.LastName)</a></p>
+                <p id="search_last_name">Source</p>
             </th>
             <th>
+                @*Options*@
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.SearchResults)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
+                    @Html.DisplayFor(modelItem => item.Source)
                 </td>
                 <td>
                     @if (IsAdmin)
                     {
                         <span>
-                            <a asp-action="Edit" title="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-pencil"></span></a> |
-                            <a asp-action="Delete" title="Delete" asp-route-id="@item.ID"><span class="glyphicon glyphicon-trash"></span></a> |
+                            <a asp-controller="@item.Source" asp-action="Edit" title="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-pencil"></span></a> |
+                            <a  asp-controller="@item.Source"asp-action="Delete" title="Delete" asp-route-id="@item.ID"><span class="glyphicon glyphicon-trash"></span></a> |
                         </span>
                     }
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                    <a asp-controller="@item.Source" asp-action="Details" asp-route-id="@item.ID">Details</a>
                 </td>
             </tr>
         }

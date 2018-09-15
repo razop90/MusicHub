@@ -2,7 +2,10 @@
 
 @{
     ViewData["Title"] = "Details";
+    bool IsAdmin = User.IsInRole(Consts.Admin);
 }
+
+@using MusicHub.Classes;
 
 <style>
     table.scroll {
@@ -80,17 +83,17 @@
         border-radius: 3px;
         color: #002ea2;
         padding: 3px 10px;
-        width:unset;
+        width: unset;
         overflow: hidden;
     }
 
-    .description{
-        font-size:14px;
+    .description {
+        font-size: 14px;
     }
 </style>
 
 <div>
-    <section>
+    <section style="float:left;">
         <div class="side_left">
             <h1>@Html.DisplayFor(model => model.Name)</h1>
         </div>
@@ -99,7 +102,10 @@
             <a asp-action="Edit" asp-route-id="@Model.ID" title="Edit"><span class="glyphicon glyphicon-pencil" /></a>
         </div>
         <div class="description">@Model.Description</div>
+    </section>
 
+    <section style="float:right;">
+        <a  asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-danger">Delete Playlist</a>
     </section>
 
     @Html.Partial("_Partial_Canvas_Decor")

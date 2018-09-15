@@ -8,7 +8,8 @@ using System;
 
 namespace MusicHub
 {
-    public enum MusicGenre { Pop, Rock, Soundtrack, Japanese , Punk }
+    public enum MusicGenre { Pop, Rock, Soundtrack, Japanese, Punk }
+    public enum SearchOptions { Song, Artist, Playlist }
 
     public class Program
     {
