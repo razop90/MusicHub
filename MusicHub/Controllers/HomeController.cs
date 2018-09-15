@@ -179,24 +179,31 @@ namespace MusicHub.Controllers
                 if (User.Identity.IsAuthenticated && user != null)
                 {
                     //Getting all playlists.
-                    var playlists = _context.Playlists.ToList();
+                    var playlists = await _context.Playlists.Include(p => p.User).ToListAsync();
                     //Getting all curent user's playlists unlse the searching is on all users.
-                    var userPlaylists = smodel.IsByPlaylistAllUsers ? playlists : playlists.Where(p => p.User != null && p.User.Id == user.Id).ToList();
+                    var userPlaylists = smodel.IsByPlaylistAllUsers || smodel.IsByPlaylistUserName ? playlists : playlists.Where(p => p.User != null && p.User.Id == user.Id).ToList();
 
                     //Playlists Search.
                     foreach (var playlist in userPlaylists)
                     {
-                        if ((smodel.IsByPlaylistName && (searchText== null || playlist.Name.ToLower().Contains(searchText)))//Name check.
-                            || (searchText != null && playlist.CreationDate.Date.ToShortDateString().ToLower().Contains(searchText)))//Date check.
+                        //Checking user name match id required.
+                        if (!smodel.IsByPlaylistUserName || (playlist.User != null && smodel.UserName != null && playlist.User.UserName.ToLower().Contains(smodel.UserName.ToLower())))
                         {
-                            var result = new SearchResult()
+                            if (!smodel.IsByPlaylistName || ((smodel.IsByPlaylistName && (searchText == null || playlist.Name.ToLower().Contains(searchText)))//Name check.
+                                || (searchText != null && playlist.CreationDate.Date.ToShortDateString().ToLower().Contains(searchText))))//Date check.
                             {
-                                Source = SearchOptions.Playlist,
-                                ID = playlist.ID,
-                                Title = playlist.Name + " Playlist"
-                            };
+                                var result = new SearchResult()
+                                {
+                                    Source = SearchOptions.Playlist,
+                                    ID = playlist.ID,
+                                    Title = playlist.Name + " Playlist"
+                                };
 
-                            searchResults.Add(result);
+                                if (playlist.User != null)
+                                    result.Title += ", Username: " + playlist.User.UserName;
+
+                                searchResults.Add(result);
+                            }
                         }
                     }
                 }

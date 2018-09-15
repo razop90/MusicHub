@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<MusicHub.Models.LocalModels.ArtistModel>
+@{
+    var IsAdmin = User.IsInRole(Consts.Admin);
+}
+@using MusicHub.Classes;
 
 <style>
     table.scroll {
@@ -36,7 +40,6 @@
             tbody td:last-child, thead th:last-child {
                 border-right: none;
             }
-
 </style>
 
 <table id="table_artists" class="table table-hover scroll">
@@ -50,7 +53,6 @@
                 <p id="search_last_name"><a>@Html.DisplayNameFor(model => model.LastName)</a></p>
             </th>
             <th>
-                Options
             </th>
         </tr>
     </thead>
@@ -65,8 +67,13 @@
                     @Html.DisplayFor(modelItem => item.LastName)
                 </td>
                 <td>
-                    <a asp-action="Edit" title="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-pencil"></span></a> |
-                    <a asp-action="Delete" title="Delete" asp-route-id="@item.ID"><span class="glyphicon glyphicon-trash"></span></a> |
+                    @if (IsAdmin)
+                    {
+                        <span>
+                            <a asp-action="Edit" title="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-pencil"></span></a> |
+                            <a asp-action="Delete" title="Delete" asp-route-id="@item.ID"><span class="glyphicon glyphicon-trash"></span></a> |
+                        </span>
+                    }
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a>
                 </td>
             </tr>

@@ -1,36 +1,49 @@
 ﻿@model IndexViewModel
-
+@using MusicHub.Classes;
 @using MusicHub.Views.Manage
 @inject SignInManager<ApplicationUser> SignInManager
 @{
     ViewData["Title"] = "Profile";
     ViewData.AddActivePage(ManageNavPages.Index);
 
-    //var providerInfo = await SignInManager.GetExternalLoginInfoAsync();
+    bool IsAdmin = User.IsInRole(Consts.Admin);
 }
 
 <h4>@ViewData["Title"]</h4>
 @Html.Partial("_StatusMessage", Model.StatusMessage)
 <div class="row">
     <div class="col-md-6">
+        <span>
+            <span>Account Type: </span>
+
+            @if (IsAdmin)
+            {
+                <span style="color:#003ac8;">Admin</span>
+            }
+            else
+            {
+                <span style="color:#003ac8;">Member</span>
+            }
+        </span>
+
         <form method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" readonly/>
+                <input asp-for="Username" class="form-control" readonly />
             </div>
             <div class="form-group">
                 <label asp-for="Email"></label>
                 @if (Model.IsEmailConfirmed)
                 {
                     <div class="input-group">
-                        <input asp-for="Email" class="form-control" readonly/>
+                        <input asp-for="Email" class="form-control" readonly />
                         <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
                     </div>
                 }
                 else
                 {
-                    <input asp-for="Email" class="form-control" readonly/>
+                    <input asp-for="Email" class="form-control" readonly />
                     <button asp-action="SendVerificationEmail" class="btn btn-link">Send verification email</button>
                 }
                 <span asp-validation-for="Email" class="text-danger"></span>

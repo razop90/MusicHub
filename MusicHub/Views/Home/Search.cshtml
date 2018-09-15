@@ -57,6 +57,7 @@
 
     .inner_container {
         border-radius: 3px;
+        height:180px;
         padding: 10px;
         background-color: #dfe9ff;
     }
@@ -142,7 +143,7 @@
                 <div class="container_field">
                     <div class="checkbox_header">
                         <label class="container_cb">
-                            Song
+                            Songs
                             @Html.CheckBoxFor(model => model.IsBySong, new { @class = "checkbox" })
                             <span class="checkmark" for="checkbox-toggle"></span>
                         </label>
@@ -177,7 +178,7 @@
                 <div class="container_field">
                     <div class="checkbox_header">
                         <label class="container_cb">
-                            Artist
+                            Artists
                             @Html.CheckBoxFor(model => model.IsByArtist, new { @class = "checkbox" })
                             <span class="checkmark" for="checkbox-toggle"></span>
                         </label>
@@ -197,12 +198,13 @@
                         </label>
                     </div>
                 </div>
+
                 @if (isLoggedIn) //Checking if there is a looged in user.
                 {
                     <div class="container_field">
                         <div class="checkbox_header">
                             <label class="container_cb">
-                                Playlist
+                                Playlists
                                 @Html.CheckBoxFor(model => model.IsByPlaylist, new { @class = "checkbox" })
                                 <span class="checkmark" for="checkbox-toggle"></span>
                             </label>
@@ -221,13 +223,20 @@
                                     @Html.CheckBoxFor(model => model.IsByPlaylistAllUsers, new { @class = "checkbox" })
                                     <span class="checkmark small_checkbox" for="checkbox-toggle"></span>
                                 </label>
+                                <br />
+                                <label class="container_cb small_checkbox">
+                                    By User Name
+                                    @Html.CheckBoxFor(model => model.IsByPlaylistUserName, new { @class = "checkbox" })
+                                    <span class="checkmark small_checkbox" for="checkbox-toggle"></span>
+                                </label>
+                                @Html.EditorFor(model => model.UserName, new { @placeholder = "Yype a user name" })
                             }
                         </div>
                     </div>
                 }
             </div>
 
-            <div class="input-group pull-right">
+            <div class="input-group pull-right" style="width:40%;">
                 <label>Free Text</label>
                 <div>
                     <input id="search_text" name="searchText" type="text" class="form-control search-query" style="min-width:300px;" placeholder="Search..." />
@@ -271,38 +280,38 @@
 
 
     <script>
-                                               //$(function () {
-                                               //    $("#IsBySong").click(function () {
-                                               //        if ($(this).is(':checked')) {
-                                               //            $('#song_section :input').removeAttr('disabled');
-                                               //        }
-                                               //        else {
-                                               //            $('#song_section :input').attr('disabled', true);
-                                               //        }
-                                               //    });
-                                               //});
+                                                                       //$(function () {
+                                                                       //    $("#IsBySong").click(function () {
+                                                                       //        if ($(this).is(':checked')) {
+                                                                       //            $('#song_section :input').removeAttr('disabled');
+                                                                       //        }
+                                                                       //        else {
+                                                                       //            $('#song_section :input').attr('disabled', true);
+                                                                       //        }
+                                                                       //    });
+                                                                       //});
 
-                                               //$(function () {
-                                               //    $("#IsByArtist").click(function () {
-                                               //        if ($(this).is(':checked')) {
-                                               //            $('#artist_section :input').removeAttr('disabled');
-                                               //        }
-                                               //        else {
-                                               //            $('#artist_section :input').attr('disabled', true);
-                                               //        }
-                                               //    });
-                                               //});
+                                                                       //$(function () {
+                                                                       //    $("#IsByArtist").click(function () {
+                                                                       //        if ($(this).is(':checked')) {
+                                                                       //            $('#artist_section :input').removeAttr('disabled');
+                                                                       //        }
+                                                                       //        else {
+                                                                       //            $('#artist_section :input').attr('disabled', true);
+                                                                       //        }
+                                                                       //    });
+                                                                       //});
 
-                                               //$('#playlist_section :input').attr('disabled', true);
-                                               //$(function () {
-                                               //    $("#IsByPlaylist").click(function () {
-                                               //        if ($(this).is(':checked')) {
-                                               //            $('#playlist_section :input').removeAttr('disabled');
-                                               //        }
-                                               //        else {
-                                               //            $('#playlist_section :input').attr('disabled', true);
-                                               //        }
-                                               //    });
-                                               //});
+                                                                       //$('#playlist_section :input').attr('disabled', true);
+                                                                       //$(function () {
+                                                                       //    $("#IsByPlaylist").click(function () {
+                                                                       //        if ($(this).is(':checked')) {
+                                                                       //            $('#playlist_section :input').removeAttr('disabled');
+                                                                       //        }
+                                                                       //        else {
+                                                                       //            $('#playlist_section :input').attr('disabled', true);
+                                                                       //        }
+                                                                       //    });
+                                                                       //});
     </script>
 }

@@ -34,6 +34,8 @@ namespace MusicHub.Models.HomeViewModels
 
         public bool IsByPlaylist { get; set; }
         public bool IsByPlaylistName { get; set; }
+        public bool IsByPlaylistUserName { get; set; }
+        public string UserName { get; set; }
         //Spaciel search for Admin users.
         public bool IsByPlaylistAllUsers { get; set; }
 
@@ -45,7 +47,7 @@ namespace MusicHub.Models.HomeViewModels
                 IsBySongName = IsBySongComposer = IsByArtist =
                 IsByArtistName = IsByArtistLastName = true;
 
-            IsByPlaylistAllUsers = IsBySongGenre = IsByPlaylist = IsByPlaylistName = false;
+            IsByPlaylistUserName = IsByPlaylistAllUsers = IsBySongGenre = IsByPlaylist = IsByPlaylistName = false;
         }
     }
 }

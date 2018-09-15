@@ -1,4 +1,8 @@
 ﻿@model MusicHub.Models.HomeViewModels.SearchModel
+@{
+    var IsAdmin = User.IsInRole(Consts.Admin);
+}
+@using MusicHub.Classes;
 
 <style>
     table.scroll {
@@ -64,6 +68,13 @@
                     @Html.DisplayFor(modelItem => item.Source)
                 </td>
                 <td>
+                    @if (IsAdmin)
+                    {
+                        <span>
+                            <a asp-controller="@item.Source" asp-action="Edit" title="Edit" asp-route-id="@item.ID"><span class="glyphicon glyphicon-pencil"></span></a> |
+                            <a  asp-controller="@item.Source"asp-action="Delete" title="Delete" asp-route-id="@item.ID"><span class="glyphicon glyphicon-trash"></span></a> |
+                        </span>
+                    }
                     <a asp-controller="@item.Source" asp-action="Details" asp-route-id="@item.ID">Details</a>
                 </td>
             </tr>

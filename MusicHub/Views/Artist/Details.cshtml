@@ -2,7 +2,10 @@
 
 @{
     ViewData["Title"] = "Details";
+    var IsAdmin = User.IsInRole(Consts.Admin);
 }
+
+@using MusicHub.Classes;
 
 <style>
     table.scroll {
@@ -58,14 +61,24 @@
 </style>
 
 <div>
-    <section>
+    <section style="float:left;">
         <div class="side_left">
             <h1>@Html.DisplayFor(model => model.FullName)</h1>
         </div>
-        <div class="side_right">
-            <a asp-action="Edit" asp-route-id="@Model.ID" title="Edit"><span class="glyphicon glyphicon-pencil" /></a>
-        </div>
+        @if (IsAdmin)
+        {
+            <div class="side_right">
+                <a asp-action="Edit" asp-route-id="@Model.ID" title="Edit"><span class="glyphicon glyphicon-pencil" /></a>
+            </div>
+        }
     </section>
+
+    @if (IsAdmin)
+    {
+        <section style="float:right;">
+            <a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-danger">Delete Artist</a>
+        </section>
+    }
 
     @Html.Partial("_Partial_Canvas_Decor")
 

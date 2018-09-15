@@ -2,7 +2,10 @@
 
 @{
     ViewData["Title"] = "Details";
+    var IsAdmin = User.IsInRole(Consts.Admin);
 }
+
+@using MusicHub.Classes;
 
 <style>
     /* divide multiple-columns with xxlarge font size*/
@@ -40,51 +43,65 @@
 
     #left {
         width: 60%;
-        min-width:450px;
+        min-width: 450px;
         margin: 5px;
         padding: 1em;
     }
+
     #right {
         width: auto;
         margin: 5px;
         padding: 1em;
-
     }
+
     .content {
         line-height: 1.5;
         display: inline-block;
         vertical-align: middle;
     }
+
     #left {
         float: left;
     }
 
     #right {
-        float:  none;
+        float: none;
     }
 
-    .youtube_container{
-        width:100%;
+    .youtube_container {
+        width: 100%;
     }
 </style>
 
 <div>
-    <section>
-        <div class="side_left">
-            <h1>@Html.DisplayFor(model => model.Name)</h1>
-        </div>
-        <div class="side_right">
-            <a asp-action="Edit" title="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></span></a>
-        </div>
-    </section>
-    @if (Model.Artist != null)
+    <div style="float:left;">
+        <section>
+            <div class="side_left">
+                <h1>@Html.DisplayFor(model => model.Name)</h1>
+            </div>
+            @if (IsAdmin)
+            {
+                <div class="side_right">
+                    <a asp-action="Edit" title="Edit" asp-route-id="@Model.ID"><span class="glyphicon glyphicon-pencil"></span></a>
+                </div>
+            }
+        </section>
+        @if (Model.Artist != null)
+        {
+            <section class="artist_section">
+                <b>by</b>
+                <a asp-controller="Artist" asp-action="Details" asp-route-id="@Model.ArtistId">
+                    @Html.DisplayFor(model => model.Artist.Name)
+                    @Html.DisplayFor(model => model.Artist.LastName)
+                </a>
+            </section>
+        }
+    </div>
+
+    @if (IsAdmin)
     {
-        <section class="artist_section">
-            <b>by</b>
-            <a asp-controller="Artist" asp-action="Details" asp-route-id="@Model.ArtistId">
-                @Html.DisplayFor(model => model.Artist.Name)
-                @Html.DisplayFor(model => model.Artist.LastName)
-            </a>
+        <section style="float:right;">
+            <a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-danger">Delete Song</a>
         </section>
     }
 </div>
