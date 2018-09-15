@@ -32,43 +32,43 @@ namespace MusicHub.Controllers
             //set default value of sort direction.
             LastDirection = "Descending";
             //get sorted artist collection from db.
-            var artists = GetSortedArtists("name");
+            var artists = await GetSortedArtists("name");
 
             return View(artists);
         }
 
         [HttpGet]
-        public ActionResult Sort(string sortBy, string searchString)
+        public async Task<ActionResult> Sort(string sortBy, string searchString)
         {
             //getting sorted artists, if there is a search 
             //string - returns filtered list by that string.
-            var artists = GetSortedArtists(sortBy, searchString);
+            var artists = await GetSortedArtists(sortBy, searchString);
             //return the new collection to the partial view.
             return PartialView("_Partial_Artists_Table", artists);
         }
 
         [HttpGet]
-        public ActionResult UndoSearch()
+        public async Task<ActionResult> UndoSearch()
         {
             //gets the full collection from db with a sorting operation.
-            var artists = GetSortedArtists("name", string.Empty, "Ascending");
+            var artists = await GetSortedArtists("name", string.Empty, "Ascending");
 
             return PartialView("_Partial_Artists_Table", artists);
         }
 
         [HttpGet]
-        public ActionResult Search(string searchString)
+        public async Task<ActionResult> Search(string searchString)
         {
             //gets artists collection from db with a filtering operation.
-            var artists = GetSearchedArtists(searchString);
+            var artists = await GetSearchedArtists(searchString);
 
             return PartialView("_Partial_Artists_Table", artists);
         }
 
-        private List<ArtistModel> GetSearchedArtists(string searchString)
+        private async Task<List<ArtistModel>> GetSearchedArtists(string searchString)
         {
             // Get all artists from DB
-            var artists = _context.Artists.ToList();
+            var artists = await _context.Artists.ToListAsync();
 
             // Check if we got search string
             if (!string.IsNullOrEmpty(searchString))
@@ -84,10 +84,10 @@ namespace MusicHub.Controllers
             return artists;
         }
 
-        private List<ArtistModel> GetSortedArtists(string sortBy, string searchString = "", string direction = null)
+        private async Task<List<ArtistModel>> GetSortedArtists(string sortBy, string searchString = "", string direction = null)
         {
             //get artists collection from db by a filter word.
-            var artists = GetSearchedArtists(searchString);
+            var artists = await GetSearchedArtists(searchString);
             //switching the order of the sorting direction.
             if (string.IsNullOrEmpty(direction))
                 LastDirection = LastDirection == "Ascending" ? "Descending" : "Ascending";
