@@ -268,7 +268,6 @@ namespace MusicHub.Controllers
             //Gets playlist with songs data inside.
             playlistModel.Playlist = await GetMatchSongs(playlistModel);
 
-
             PopulateAssignedSongsData(playlistModel);
             // send the model to the view
             return View(playlistModel);
@@ -307,11 +306,6 @@ namespace MusicHub.Controllers
 
             if (ModelState.IsValid)
             {
-                //if (await TryUpdateModelAsync<PlaylistModel>(
-                //playlistModel, "",
-                //i => i., i => i.LastName, i => i.Songs))
-                //{
-                //}
                 try
                 {
                     _context.Update(playlistModel);
@@ -389,7 +383,6 @@ namespace MusicHub.Controllers
                 return false;
             }
 
-            //await _context.SaveChangesAsync();
             return true;
         }
 
