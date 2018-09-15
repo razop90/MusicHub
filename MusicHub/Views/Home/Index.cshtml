@@ -4,6 +4,7 @@
 @using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Home Page";
+    var IsLoggedIn = User.Identity.IsAuthenticated;
 }
 
 <style>
@@ -252,12 +253,23 @@
         @*Statistics section*@
         <div class="top_margin">
             <h3 class="widget-title">
-                <span>Statistics</span>
+                <span>Website Genres</span>
             </h3>
             @*Genres graph*@
-            <span>Genres x Songs Count</span>
+            <span>Songs Count By Genres</span>
             @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
-            <svg id="barChart"></svg>
+            <svg id="genreBarChart"></svg>
+
+            @if (IsLoggedIn)//Checling if the user is logged in.
+            {
+                <h3 class="widget-title">
+                    <span>User's Playlists Genres</span>
+                </h3>
+                @*Playlist Genres graph*@
+                <span>Songs Count By Genres</span>
+                @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
+                <svg id="playlistBarChart"></svg>
+            }
         </div>
 
         <!-- News stories -->
@@ -270,8 +282,19 @@
                     MTV Top New Stories
                 </div>
                 <ul class="media-list">
-                    @{foreach (var article in Model.NewsArticles)
+                    @{
+                        //Settinng max articles to be displayed.
+                        var maxArticles = Model.NewsArticles.Count > Consts.ArticlesToDisplay ? Consts.ArticlesToDisplay : Model.NewsArticles.Count;
+                        //If the user isn't logged in - setting the max articles display to by the maximum.
+                        if (!IsLoggedIn&& Model.NewsArticles.Count> Consts.ArticlesToDisplay)
                         {
+                            maxArticles = Model.NewsArticles.Count;
+                        }
+
+                        for (int i = 0; i < maxArticles; i++)
+                        {
+                            var article = Model.NewsArticles[i];
+
                             <li class="media">
                                 <img src="@article.ImageURL" alt="" class="img-circle pull-left">
 
@@ -401,79 +424,84 @@
 
 @*Genre Data Script*@
 <script>
-  var genre_data = @Html.Raw(JsonConvert.SerializeObject(Model.GenreData));
+    var genre_data = @Html.Raw(JsonConvert.SerializeObject(Model.GenreData));
+    var playlists_data = @Html.Raw(JsonConvert.SerializeObject(Model.PlaylistsData));
 
-  var margin = {
-      top: 20,
-      right: 20,
-      bottom: 50,
-      left: 40
-    },
-    width = 300 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    applyGraphData(genre_data, "svg#genreBarChart");
+    applyGraphData(playlists_data, "svg#playlistBarChart");
 
-
-  var x = d3.scale.ordinal()
-    .rangeRoundBands([width, 0], 0.1);
-
-  var y = d3.scale.linear()
-    .range([0, height]);
-
-  var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
- var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left")
-    .tickFormat(d3.format("d"))
-    .tickSubdivide(0);
+    function applyGraphData(data,field_id) {
+        var margin = {
+            top: 20,
+            right: 20,
+            bottom: 50,
+            left: 40
+        },
+            width = 300 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
 
 
-  var svg = d3.select("svg#barChart")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom+20)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([width, 0], 0.1);
 
-    x.domain(genre_data.map(function(d) { return d.Title; }));
+        var y = d3.scale.linear()
+            .range([0, height]);
 
-    y.domain([d3.max(genre_data, function(d) {
-    return d.Count;
-  }), 0]);
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
 
-  //g : Title attributes.
-  svg.append("g")
-    .attr("class", "y axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis)
-    .selectAll("text")
-    .attr("transform", "rotate(90)")
-    .attr("x", 5)
-    .attr("y", -4)
-    .attr("dx", ".6em")
-    .style("text-anchor", "start");
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .tickFormat(d3.format("d"))
+            .tickSubdivide(0);
 
-  svg.append("g")
-    .attr("class", "y axis")
-    .call(yAxis);
 
-  svg.selectAll(".bar")
-      .data(genre_data)
-    .enter().append("rect")
-    .attr("class", "bar")
+        var svg = d3.select(field_id)
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom + 50)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    .attr("x", function(d) {
-      return x(d.Title);
-    })
-    .attr("width", x.rangeBand())
-    .attr("y", function(d) {
-      return y(d.Count);
-    })
-    .attr("height", function(d) {
-      return height - y(d.Count);
-    });
+        x.domain(data.map(function (d) { return d.Title; }));
 
+        y.domain([d3.max(data, function (d) {
+            return d.Count;
+        }), 0]);
+
+        //g : Title attributes.
+        svg.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .attr("transform", "rotate(90)")
+            .attr("x", 5)
+            .attr("y", -4)
+            .attr("dx", ".6em")
+            .style("text-anchor", "start");
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
+
+        svg.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+
+            .attr("x", function (d) {
+                return x(d.Title);
+            })
+            .attr("width", x.rangeBand())
+            .attr("y", function (d) {
+                return y(d.Count);
+            })
+            .attr("height", function (d) {
+                return height - y(d.Count);
+            });
+    }
 </script>
 
 

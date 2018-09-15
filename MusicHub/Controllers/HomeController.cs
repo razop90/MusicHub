@@ -6,6 +6,7 @@ using MusicHub.Classes.Home;
 using MusicHub.Data;
 using MusicHub.Models;
 using MusicHub.Models.HomeViewModels;
+using MusicHub.Models.LocalModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace MusicHub.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             //Getting songs and artist collections from db.
             var songs = _context.Songs.ToList();
@@ -109,6 +110,56 @@ namespace MusicHub.Controllers
 
             #endregion
 
+            #region Playlists Graph Data
+
+            //Getting the application user data.
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            //Creating genre graph data collection.
+            var playlistGenres = new List<GraphData>();
+            //Getting a collection of all the available genres in order
+            //to complete the missing genres in the end of the graph data collection creation.
+            var allPlaylistGenres = Enum.GetNames(typeof(MusicGenre)).ToList();
+
+            if (User.Identity.IsAuthenticated && user != null)
+            {
+                //Getting all user's playlists.
+                var playlists = await _context.Playlists.Include(p => p.User).Where(p => p.User != null && p.User.Id == user.Id).ToListAsync();
+                var dictionary = new Dictionary<MusicGenre, int>();
+
+                foreach (var playlist in playlists)
+                {
+                    var playlistSongs = await GetMatchSongs(playlist);
+
+                    foreach (var song in playlistSongs)
+                    {
+                        if (!dictionary.ContainsKey(song.Genre))
+                            dictionary.Add(song.Genre, 0);
+                        dictionary[song.Genre]++;
+                    }
+                }    
+                
+                //Adding the data to the graph data collection.
+                foreach (var item in dictionary)
+                {
+                    var genre = item.Key.ToString();
+                    //Removing the exists genre from the 'all genres' collection.
+                    if (allPlaylistGenres.Contains(genre))
+                        allPlaylistGenres.Remove(genre);
+
+                    var data = new GraphData() { Title = genre, Count = item.Value };
+                    playlistGenres.Add(data);
+                }
+
+                //Adding the missing (none exist) genres.
+                foreach (var genre in allPlaylistGenres)
+                {
+                    var data = new GraphData() { Title = genre, Count = 0 };
+                    playlistGenres.Add(data);
+                }
+            }
+
+            #endregion
+
             #region News items            
 
             // Fetch json with top news headlines
@@ -135,10 +186,27 @@ namespace MusicHub.Controllers
             {
                 Highlights = highlights,
                 GenreData = genres,
+                PlaylistsData = playlistGenres,
                 NewsArticles = newsArticles
             };
 
             return View(model);
+        }
+
+        private async Task<List<SongModel>> GetMatchSongs(PlaylistModel playlist)
+        {
+            //Gets connections from the db including songs and playlists inside.
+            var connections = await _context.PlaylistSongsConnections
+            .Include(connection => connection.Playlist).Include(connection => connection.Song).ToListAsync();
+
+            //Getting all playlists/songs connections.
+            //var connections = await _context.PlaylistSongsConnections.ToListAsync();
+            //Getting all song.
+            var songs = (from connection in connections
+                         where connection.Playlist != null && connection.Playlist.ID == playlist.ID
+                         select connection.Song).ToList();
+
+            return songs;
         }
 
         public IActionResult About()
