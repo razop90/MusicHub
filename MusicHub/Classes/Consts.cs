@@ -25,6 +25,12 @@ namespace MusicHub.Classes
 
         #endregion
 
+        #region MTV Articles
+
+        public const int ArticlesToDisplay = 3;
+
+        #endregion
+
         public static void Initialize(ApplicationDbContext context)
         {
             if (context.Artists == null || context.Songs == null || context.Locations == null)
