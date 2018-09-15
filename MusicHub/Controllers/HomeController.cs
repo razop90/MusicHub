@@ -159,7 +159,6 @@ namespace MusicHub.Controllers
             var model = await GetSearchedValues(smodel, searchText);
 
             return PartialView("_Partial_Search_Table", model);
-
         }
 
         private async Task<SearchModel> GetSearchedValues(SearchModel smodel, string searchText)

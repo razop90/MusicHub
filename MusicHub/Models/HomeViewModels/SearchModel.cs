@@ -16,9 +16,7 @@ namespace MusicHub.Models.HomeViewModels
         public bool IsBySongGenre { get; set; }
         public MusicGenre Genre { get; set; }
         public bool IsBySongName { get; set; }
-        public string SongName { get; set; }
         public bool IsBySongComposer { get; set; }
-        public string SongComposer { get; set; }
 
         #endregion
 
@@ -34,9 +32,9 @@ namespace MusicHub.Models.HomeViewModels
 
         public bool IsByPlaylist { get; set; }
         public bool IsByPlaylistName { get; set; }
+        //Spaciel search for Admin users.
         public bool IsByPlaylistUserName { get; set; }
         public string UserName { get; set; }
-        //Spaciel search for Admin users.
         public bool IsByPlaylistAllUsers { get; set; }
 
         #endregion
@@ -47,7 +45,8 @@ namespace MusicHub.Models.HomeViewModels
                 IsBySongName = IsBySongComposer = IsByArtist =
                 IsByArtistName = IsByArtistLastName = true;
 
-            IsByPlaylistUserName = IsByPlaylistAllUsers = IsBySongGenre = IsByPlaylist = IsByPlaylistName = false;
+            IsByPlaylistUserName = IsByPlaylistAllUsers = IsBySongGenre 
+                = IsByPlaylist = IsByPlaylistName = false;
         }
     }
 }
