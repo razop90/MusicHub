@@ -101,11 +101,14 @@ namespace MusicHub.Controllers
                 genres.Add(data);
             }
 
-            //Adding the missing (none exist) genres.
-            foreach (var genre in allGenres)
+            if (genres.Count > 0)//If there is at least one song in the system.
             {
-                var data = new GraphData() { Title = genre, Count = 0 };
-                genres.Add(data);
+                //Adding the missing (none exist) genres.
+                foreach (var genre in allGenres)
+                {
+                    var data = new GraphData() { Title = genre, Count = 0 };
+                    genres.Add(data);
+                }
             }
 
             #endregion
@@ -136,8 +139,8 @@ namespace MusicHub.Controllers
                             dictionary.Add(song.Genre, 0);
                         dictionary[song.Genre]++;
                     }
-                }    
-                
+                }
+
                 //Adding the data to the graph data collection.
                 foreach (var item in dictionary)
                 {
@@ -150,11 +153,14 @@ namespace MusicHub.Controllers
                     playlistGenres.Add(data);
                 }
 
-                //Adding the missing (none exist) genres.
-                foreach (var genre in allPlaylistGenres)
+                if (playlistGenres.Count > 0)//If there is at least one user playlist in the system.
                 {
-                    var data = new GraphData() { Title = genre, Count = 0 };
-                    playlistGenres.Add(data);
+                    //Adding the missing (none exist) genres.
+                    foreach (var genre in allPlaylistGenres)
+                    {
+                        var data = new GraphData() { Title = genre, Count = 0 };
+                        playlistGenres.Add(data);
+                    }
                 }
             }
 
@@ -187,7 +193,9 @@ namespace MusicHub.Controllers
                 Highlights = highlights,
                 GenreData = genres,
                 PlaylistsData = playlistGenres,
-                NewsArticles = newsArticles
+                NewsArticles = newsArticles,
+                IsPlaylistGraphIsEmpty = playlistGenres.Count == 0,
+                IsGenreGraphIsEmpty = genres.Count == 0,
             };
 
             return View(model);

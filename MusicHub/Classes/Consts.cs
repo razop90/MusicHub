@@ -27,7 +27,7 @@ namespace MusicHub.Classes
 
         #region MTV Articles
 
-        public const int ArticlesToDisplay = 3;
+        public const int ArticlesToDisplay = 2;
 
         #endregion
 

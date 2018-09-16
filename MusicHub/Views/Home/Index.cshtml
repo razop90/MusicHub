@@ -143,7 +143,7 @@
 
     .article_container {
         margin: 5px 0 0 0;
-        max-height: 1070px;
+        max-height: 1430px;
         overflow-y: auto;
     }
 
@@ -226,6 +226,10 @@
         height: 74px;
         border: 2px solid #e5e7e8;
     }
+
+    .no-graph-header {
+        color: #1d3887;
+    }
 </style>
 
 <head>
@@ -252,68 +256,99 @@
 
         @*Statistics section*@
         <div class="top_margin">
+            <!-- Tweeter Header -->
+            <h3 class="widget-title">
+                <span>Tweets</span>
+            </h3>
+            <!-- Tweeter Feed -->
+            <a class="twitter-timeline" data-width="330" data-height="450" data-link-color="#2B7BB9" href="https://twitter.com/Eurovision?ref_src=twsrc%5Etfw">Tweets by TwitterDev</a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <!-- Tweeter Comment Button -->
+            <a href="https://twitter.com/intent/tweet?screen_name=Eurovision&ref_src=twsrc%5Etfw" class="twitter-mention-button" data-text="Tweeting from Music-Hub. Good luck Israel!" data-dnt="true" data-show-count="false">Tweet to Eurovision</a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <!-- Tweeter Follow Button -->
+            <a href="https://twitter.com/Eurovision?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-text="Tweeting from Music-Hub. Good luck Israel!" data-show-screen-name="false" data-dnt="true" data-show-count="false">Follow Eurovision</a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+            <!-- News stories -->
+            <div class="news-wrapper">
+                <h3 class="widget-title">
+                    <span>Music News</span>
+                </h3>
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        MTV Top New Stories
+                    </div>
+                    <ul class="media-list">
+                        @{
+                            //Settinng max articles to be displayed.
+                            var maxArticles = Model.NewsArticles.Count > Consts.ArticlesToDisplay ? Consts.ArticlesToDisplay : Model.NewsArticles.Count;
+                            //If the user isn't logged in - setting the max articles display to by the maximum.
+                            if (!IsLoggedIn && Model.NewsArticles.Count > Consts.ArticlesToDisplay)
+                            {
+                                maxArticles = Model.NewsArticles.Count;
+                            }
+
+                            for (int i = 0; i < maxArticles; i++)
+                            {
+                                var article = Model.NewsArticles[i];
+
+                                <li class="media">
+                                    <img src="@article.ImageURL" alt="" class="img-circle pull-left">
+
+                                    <div class="media-body">
+                                        <span class="text-muted pull-right">
+                                            <small class="text-muted">@article.PublishDate</small>
+                                        </span>
+                                        <a href="@article.URL">
+                                            <strong class="text-success">@article.Title</strong>
+                                        </a>
+                                        <p>
+                                            @article.Description
+                                        </p>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Genres graph -->
             <h3 class="widget-title">
                 <span>Website Genres</span>
             </h3>
-            @*Genres graph*@
             <span>Songs Count By Genres</span>
-            @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
-            <svg id="genreBarChart"></svg>
+            <!-- If the graph data is empty - display a defaul label -->
+            @if (Model.IsGenreGraphIsEmpty)
+            {
+                <h4 class="no-graph-header">No Songs Were Found</h4>
+            }
+            else
+            {
+                @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
+                <svg id="genreBarChart"></svg>
+            }
 
             @if (IsLoggedIn)//Checling if the user is logged in.
             {
+                <!-- Playlist Genres graph -->
                 <h3 class="widget-title">
                     <span>User's Playlists Genres</span>
                 </h3>
-                @*Playlist Genres graph*@
                 <span>Songs Count By Genres</span>
-                @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
-                <svg id="playlistBarChart"></svg>
+
+                <!-- If the graph data is empty - display a defaul label -->
+                @if (Model.IsPlaylistGraphIsEmpty)
+                {
+                    <h4 class="no-graph-header">No Playlists Were Found</h4>
+                }
+                else
+                {
+                    @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
+                    <svg id="playlistBarChart"></svg>
+                }
             }
-        </div>
-
-        <!-- News stories -->
-        <div class="news-wrapper">
-            <h3 class="widget-title">
-                <span>Music News</span>
-            </h3>
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    MTV Top New Stories
-                </div>
-                <ul class="media-list">
-                    @{
-                        //Settinng max articles to be displayed.
-                        var maxArticles = Model.NewsArticles.Count > Consts.ArticlesToDisplay ? Consts.ArticlesToDisplay : Model.NewsArticles.Count;
-                        //If the user isn't logged in - setting the max articles display to by the maximum.
-                        if (!IsLoggedIn&& Model.NewsArticles.Count> Consts.ArticlesToDisplay)
-                        {
-                            maxArticles = Model.NewsArticles.Count;
-                        }
-
-                        for (int i = 0; i < maxArticles; i++)
-                        {
-                            var article = Model.NewsArticles[i];
-
-                            <li class="media">
-                                <img src="@article.ImageURL" alt="" class="img-circle pull-left">
-
-                                <div class="media-body">
-                                    <span class="text-muted pull-right">
-                                        <small class="text-muted">@article.PublishDate</small>
-                                    </span>
-                                    <a href="@article.URL">
-                                        <strong class="text-success">@article.Title</strong>
-                                    </a>
-                                    <p>
-                                        @article.Description
-                                    </p>
-                                </div>
-                            </li>
-                        }
-                    }
-                </ul>
-            </div>
         </div>
     </aside>
     @if (Model.Highlights != null)
@@ -424,7 +459,7 @@
 
 @*Genre Data Script*@
 <script>
-    var genre_data = @Html.Raw(JsonConvert.SerializeObject(Model.GenreData));
+ var genre_data = @Html.Raw(JsonConvert.SerializeObject(Model.GenreData));
     var playlists_data = @Html.Raw(JsonConvert.SerializeObject(Model.PlaylistsData));
 
     applyGraphData(genre_data, "svg#genreBarChart");
