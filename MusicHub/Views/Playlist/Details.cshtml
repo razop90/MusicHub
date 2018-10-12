@@ -1,13 +1,12 @@
 ﻿@model MusicHub.Models.LocalModels.PlaylistModel
-
 @{
     ViewData["Title"] = "Details";
     bool IsAdmin = User.IsInRole(Consts.Admin);
 }
-
 @using MusicHub.Classes;
-
+@using MusicHub.Models.LocalModels;
 <style>
+
     table.scroll {
         width: 100%; /* Optional */
         /* border-collapse: collapse; */
@@ -90,8 +89,21 @@
     .description {
         font-size: 14px;
     }
-</style>
 
+    .highlight-body a {
+        font-size: 14px;
+        color: #289dcc;
+    }
+
+        .highlight-body a:hover {
+            color: #48b9e7;
+            text-decoration-line: none;
+        }
+
+    .con {
+        color: #003d96
+    }
+</style>
 <div>
     <section style="float:left;">
         <div class="side_left">
@@ -103,17 +115,33 @@
         </div>
         <div class="description">@Model.Description</div>
     </section>
-
     <section style="float:right;">
-        <a  asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-danger">Delete Playlist</a>
+        <a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-danger">Delete Playlist</a>
     </section>
-
     @Html.Partial("_Partial_Canvas_Decor")
-
+    @*Recommended song with details display*@
+    @if (ViewData["RecSong"] is SongModel recSong)
+    {
+        <span class="con">
+            <span class="glyphicon glyphicon-bullhorn"></span>
+            <span>You might also like</span>
+            <span class="highlight-body">
+                <a asp-controller="Song" asp-action="Details" asp-route-id="@recSong.ID">@recSong.Name</a>
+            </span>
+            @if (recSong.Artist != null)
+            {
+                <span class="highlight-body">
+                    <span>by</span>
+                    <a asp-controller="Artist" asp-action="Details" asp-route-id="@recSong.Artist.ID">@recSong.Artist.FullName</a>
+                </span>
+            }
+        </span>
+        <br />
+        <br />
+    }
     <div>
         <span class="numbered">@Model.Playlist.Count Songs</span>
     </div>
-
     <table class="table table-hover scroll">
         <thead>
             <tr>

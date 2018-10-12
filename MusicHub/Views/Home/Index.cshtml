@@ -1,13 +1,12 @@
 ﻿@model MusicHub.Models.HomeViewModels.IndexViewModel
-
 @using MusicHub.Classes;
 @using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Home Page";
     var IsLoggedIn = User.Identity.IsAuthenticated;
 }
-
 <style>
+
     .highlight-title {
         font-size: 25px;
         color: darkcyan;
@@ -102,7 +101,6 @@
         border-bottom: 2px solid #289dcc;
         font-size: 18px;
         margin-bottom: 15px;
-        padding-bottom: 0;
     }
 
         .widget-title span {
@@ -231,21 +229,17 @@
         color: #1d3887;
     }
 </style>
-
 <head>
-    <meta name="viewport" content="width=device-width">
+    @*script for Graphs*@
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
-
 <div>
     <aside id="aside-left">
         <h3 class="widget-title">
             <span>Search</span>
         </h3>
-
         @*Search bar*@
         <form asp-controller="Home" asp-action="Search" method="get" class="form-search form-inline">
-
             <div class="input-group pull-left" style="width:100%;">
                 <input name="searchText" type="text" class="form-control search-query" placeholder="Songs and Artists" />
                 <span class="input-group-btn">
@@ -253,10 +247,9 @@
                 </span>
             </div>
         </form>
-
         @*Statistics section*@
         <div class="top_margin">
-            <!-- Tweeter Header -->
+            <!-- Twitter Header -->
             <h3 class="widget-title">
                 <span>Tweets</span>
             </h3>
@@ -269,7 +262,6 @@
             <!-- Tweeter Follow Button -->
             <a href="https://twitter.com/Eurovision?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-text="Tweeting from Music-Hub. Good luck Israel!" data-show-screen-name="false" data-dnt="true" data-show-count="false">Follow Eurovision</a>
             <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
             <!-- News stories -->
             <div class="news-wrapper">
                 <h3 class="widget-title">
@@ -295,7 +287,6 @@
 
                                 <li class="media">
                                     <img src="@article.ImageURL" alt="" class="img-circle pull-left">
-
                                     <div class="media-body">
                                         <span class="text-muted pull-right">
                                             <small class="text-muted">@article.PublishDate</small>
@@ -313,7 +304,6 @@
                     </ul>
                 </div>
             </div>
-
             <!-- Genres graph -->
             <h3 class="widget-title">
                 <span>Website Genres</span>
@@ -329,7 +319,6 @@
                 @*SVG:Scalable Vector Graphics element. This SVG is used to draw the chart*@
                 <svg id="genreBarChart"></svg>
             }
-
             @if (IsLoggedIn)//Checling if the user is logged in.
             {
                 <!-- Playlist Genres graph -->
@@ -359,8 +348,6 @@
 
         <aside id="aside-right">
             <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-                @*checking if there are highlights*@
-
                 <div>
                     <ol class="carousel-indicators">
                         @*looping on all highlights and add bolets for each item for the home page songs-display control
@@ -388,22 +375,18 @@
 
                                 <div id="main-wrap" class="@cla">
                                     <img id="image" src="http://img.youtube.com/vi/@highlight.YoutubeId/maxresdefault.jpg" class="img-responsive" />
-
                                     <div class="highlight-wrapper">
                                         <section class="carousel-caption" role="option">
                                             <h1 class="highlight-title">
                                                 <br>@highlight.SongName
                                             </h1>
-
                                             <span class="highlight-body">
                                                 <b>by</b>
                                                 <a asp-controller="Artist" asp-action="Details" asp-route-id="@highlight.ArtistID">@highlight.ArtistName</a>
                                                 <br />
                                                 <br />
                                             </span>
-
                                             <a class="highlight-button" asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID">@highlight.ButtonContent</a>
-
                                             @*empty space*@
                                             <br />
                                             <br />
@@ -432,7 +415,6 @@
                         <div>
                             <a class="featured-image" asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID"><img src="http://img.youtube.com/vi/@highlight.YoutubeId/mqdefault.jpg" alt="" scale="0"></a>
                         </div>
-
                         <div class="article-content clearfix">
                             <div>
                                 <span class="cat-links">
@@ -444,7 +426,6 @@
                                     <a asp-controller="Song" asp-action="Details" asp-route-id="@highlight.SongID">@highlight.SongName</a>
                                 </h2>
                             </header>
-
                             <span class="entry-content">
                                 <b>by</b>
                                 <a asp-controller="Artist" asp-action="Details" asp-route-id="@highlight.ArtistID">@highlight.ArtistName</a>
@@ -456,10 +437,10 @@
         </aside>
     }
 </div>
-
-@*Genre Data Script*@
+@*Genre Data Script D3*@
 <script>
- var genre_data = @Html.Raw(JsonConvert.SerializeObject(Model.GenreData));
+    //Convert lists into json objects.
+    var genre_data = @Html.Raw(JsonConvert.SerializeObject(Model.GenreData));
     var playlists_data = @Html.Raw(JsonConvert.SerializeObject(Model.PlaylistsData));
 
     applyGraphData(genre_data, "svg#genreBarChart");
@@ -538,5 +519,4 @@
             });
     }
 </script>
-
 

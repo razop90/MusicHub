@@ -53,7 +53,6 @@ namespace MusicHub.Controllers
                              artis_name = artist.FullName
                          }).ToList();
 
-            //creating highlights - takes the most 5 recent songs.
             var highlights = new List<Highlight>();
             if (query.Count > 0)
             {
@@ -229,6 +228,7 @@ namespace MusicHub.Controllers
             return View(model);
         }
 
+        //Not in use - a try for applying Ajax search.
         [HttpGet]
         public async Task<ActionResult> TypeSearch(SearchModel smodel, string searchText)
         {

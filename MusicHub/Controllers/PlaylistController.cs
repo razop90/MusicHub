@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Accord.MachineLearning.Rules;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicHub.Data;
 using MusicHub.Models;
 using MusicHub.Models.ArtistViewModels;
 using MusicHub.Models.LocalModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MusicHub.Controllers
 {
@@ -20,11 +20,18 @@ namespace MusicHub.Controllers
 
         [TempData]
         public string LastDirection { get; set; } //Descending or Ascending
+        [TempData]
+        public static Apriori AprioriAlg { get; set; }
+        [TempData]
+        public static AssociationRuleMatcher<int> Classifier { get; set; }
 
         public PlaylistController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+
+            //Initializing aprior alg.
+            AprioriAlg = new Apriori(threshold: 1, confidence: 0);
         }
 
         // GET: Playlist
@@ -152,6 +159,39 @@ namespace MusicHub.Controllers
             //Gets playlist with songs data inside.
             var songs = await GetMatchSongs(playlistModel);
 
+            #region Machine Learnning            
+
+            //Learnning website playlists.
+            await LearnAprior();
+
+            //Playlists songs to ints vector.
+            var pl = (await ToSortesSetCollection(playlistModel)).ToArray();
+            // Use the classifier to find songs that are similar to 
+            // current playlist's songs where users have selected the same songs.
+            int[][] matches = Classifier.Decide(pl);
+
+            //Recommended song - null by default.
+            SongModel song = null;
+            if (matches.Length > 0)
+            {
+                //Song id -  - null by default.
+                int? songId = null;
+                try //Trying to get the first heigh match song's id.
+                {
+                    songId = matches[0][0];
+                }
+                catch (Exception) { }
+                //If wev'e got the song's id - get the song instance from the database, including it's artist instance.
+                if (songId != null)
+                {
+                    song = _context.Songs.Include(s => s.Artist).FirstOrDefault(s => s.ID == songId);
+
+                    ViewData["RecSong"] = song;
+                }
+            }
+
+            #endregion
+
             //Setting the song that were found match to the playlist.
             playlistModel.Playlist = songs;
             return View(playlistModel);
@@ -163,8 +203,6 @@ namespace MusicHub.Controllers
             var connections = await _context.PlaylistSongsConnections
             .Include(connection => connection.Playlist).Include(connection => connection.Song).ToListAsync();
 
-            //Getting all playlists/songs connections.
-            //var connections = await _context.PlaylistSongsConnections.ToListAsync();
             //Getting all song.
             var songs = (from connection in connections
                          where connection.Playlist != null && connection.Playlist.ID == playlist.ID
@@ -433,6 +471,41 @@ namespace MusicHub.Controllers
         private bool PlaylistModelExists(int id)
         {
             return _context.Playlists.Any(e => e.ID == id);
+        }
+
+        public async Task<object> LearnAprior()
+        {
+            var playlists = await _context.Playlists.ToListAsync();
+
+            // Each row represents a set of items that have been bought 
+            // together. Each number is a SKU identifier for a product.
+            SortedSet<int>[] dataset = new SortedSet<int>[playlists.Count];
+
+            for (int i = 0; i < playlists.Count; i++)
+            {
+                dataset[i] = await ToSortesSetCollection(playlists[i]);
+            }
+
+            // Use the algorithm to learn a set matcher
+            Classifier = AprioriAlg.Learn(dataset);
+
+            return 1;
+        }
+
+        /// <summary>
+        /// Creating a new SortedSet of songs id's by a given playlist.
+        /// </summary>
+        public async Task<SortedSet<int>> ToSortesSetCollection(PlaylistModel playlistModel)
+        {
+            var sortedSet = new SortedSet<int>();
+            var songs = await GetMatchSongs(playlistModel);
+
+            foreach (var song in songs)
+            {
+                sortedSet.Add(song.ID);
+            }
+
+            return sortedSet;
         }
     }
 }
