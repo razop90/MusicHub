@@ -165,25 +165,31 @@ namespace MusicHub.Controllers
 
             #endregion
 
-            #region News items            
+            #region MTV Articles    
 
-            // Fetch json with top news headlines
-            var newsJson = new WebClient().DownloadString(_iConfig.GetValue<string>("MusicNewsAPI"));
-            dynamic dynJson = JsonConvert.DeserializeObject(newsJson);
             var newsArticles = new List<Article>();
-            // Populate articles list
-            foreach (var article in dynJson.articles)
+
+            try
             {
-                newsArticles.Add(new Article
+                // Fetch json with top news headlines
+                var newsJson = new WebClient().DownloadString(_iConfig.GetValue<string>("MusicNewsAPI"));
+                dynamic dynJson = JsonConvert.DeserializeObject(newsJson);
+
+                // Populate articles list
+                foreach (var article in dynJson.articles)
                 {
-                    Author = article.author,
-                    Title = article.title,
-                    Description = article.description,
-                    URL = article.url,
-                    ImageURL = article.urlToImage,
-                    PublishDate = article.publishedAt
-                });
+                    newsArticles.Add(new Article
+                    {
+                        Author = article.author,
+                        Title = article.title,
+                        Description = article.description,
+                        URL = article.url,
+                        ImageURL = article.urlToImage,
+                        PublishDate = article.publishedAt
+                    });
+                }
             }
+            catch (Exception) {}
 
             #endregion
 
