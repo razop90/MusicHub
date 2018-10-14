@@ -1,4 +1,5 @@
 ﻿using Accord.MachineLearning.Rules;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace MusicHub.Controllers
 {
+    [Authorize]
     public class PlaylistController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -255,7 +257,7 @@ namespace MusicHub.Controllers
         {
             try
             {
-                // For performance we use HashSet of the selected songs from the edit view of the Artist.
+                // For performance we use HashSet of the selected songs from the edit view of the playlist.
                 var selectedSongsHS = new HashSet<string>(selectedSongs);
                 var songsConnections = new List<PlaylistSongModel>();
                 // The current songs of the playlist.
@@ -311,6 +313,10 @@ namespace MusicHub.Controllers
             return View(playlistModel);
         }
 
+        /// <summary>
+        /// When editing a playlist, getting the current playlist's songs list
+        /// and filled checkbox of the selected songs.
+        /// </summary>
         private void PopulateAssignedSongsData(PlaylistModel playlist)
         {
             var allSongs = _context.Songs.Include(song => song.Artist);

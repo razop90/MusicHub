@@ -81,11 +81,14 @@
         })
 
         $(document).ready(function () {
+            //KeyUp - Pushing a button on the keyboard. 
             $("#search_text").keyup(function () {
                 $.ajax({
                     url: "/Playlist/Search",
                     type: "GET",
-                    data: { "searchString": $("#search_text").val() }
+                    //Data - Parameters for the action function.
+                    //Sending the value of the textbox to the action function as 'searchString' parameter.
+                    data: { "searchString": $("#search_text").val() } 
                 })
                     .done(function (partialViewResult) {
                         $("#refTable").html(partialViewResult);
